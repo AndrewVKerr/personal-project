@@ -4,7 +4,7 @@ import net.projectio.server.Ticket;
 import net.projectio.server.protocols.Packet;
 import net.projectio.server.protocols.Protocol;
 
-public class HttpProtocol extends Protocol{
+public class HttpProtocol extends Protocol<HttpPacket>{
 
 	@Override
 	public Packet generateNewPacketObject(Ticket ticket) {

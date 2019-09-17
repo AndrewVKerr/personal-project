@@ -10,12 +10,12 @@ import net.projectio.server.Ticket;
  * @author ThePuppet
  *
  */
-public abstract class Protocol {
+public abstract class Protocol<P extends Packet> {
 
 	/**
 	 * This method will generate a {@linkplain Packet} that matches the protocol's name.
 	 * @param ticket - {@linkplain Ticket} - The ticket object that is being used to generate the packet.
 	 */
-	public abstract Packet generateNewPacketObject(Ticket ticket);
+	public abstract P generateNewPacketObject(Ticket ticket);
 	
 }
