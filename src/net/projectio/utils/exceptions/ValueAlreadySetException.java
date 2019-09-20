@@ -5,7 +5,7 @@ package net.projectio.utils.exceptions;
  * were trying to change is in a pseudo-final stage, it can be edited directly but cannot be changed via 
  * the method that threw this exception or any methods that will throw this exception. Its purpose is to allow
  * the values to be set and set pseudo-permanently without forcing you to set it directly in the constructor.
- * @author ThePuppet
+ * @author Andrew Kerr
  */
 public class ValueAlreadySetException extends Exception{
 

@@ -2,7 +2,7 @@ package net.projectio.utils.exceptions;
 
 /**
  * This exception is thrown when a value being assigned has been locked.
- * @author ThePuppet
+ * @author Andrew Kerr
  */
 public class LockedValueException extends Exception {
 

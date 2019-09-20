@@ -25,6 +25,6 @@
  * </table>
  * <hr>
  * @version 0.0.1
- * @author ThePuppet
+ * @author Andrew Kerr
  */
 package net.projectio;

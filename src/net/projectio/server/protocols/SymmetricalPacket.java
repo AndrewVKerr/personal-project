@@ -10,9 +10,9 @@ public abstract class SymmetricalPacket extends Packet{
 	 */
 	public final synchronized void readFromTicket() throws Exception {
 		if(!this.validateTicket())
-			throw new RuntimeException("[Packet.readFromTicket():INVALID_TICKET] Could not read in the next packet from ticket, missing ticket object within the packet object.");
+			throw new RuntimeException("[SymmetricalPacket.readFromTicket():INVALID_TICKET] Could not read in the next packet from ticket, missing ticket object within the packet object.");
 		if(this.isLocked())
-			throw new RuntimeException("[Packet.readFromTicket():ALREADY_LOCKED] Packet is already in a locked state, cannot interact with the packet due to this lock.");
+			throw new RuntimeException("[SymmetricalPacket.readFromTicket():ALREADY_LOCKED] Packet is already in a locked state, cannot interact with the packet due to this lock.");
 		this.readInPacket();
 	}
 	
@@ -24,9 +24,9 @@ public abstract class SymmetricalPacket extends Packet{
 	 */
 	public final synchronized void writeToTicket() throws Exception {
 		if(!this.validateTicket())
-			throw new RuntimeException("[Packet.writeToTicket():INVALID_TICKET] Could not write the packet to the ticket, missing ticket object within the packet object.");
+			throw new RuntimeException("[SymmetricalPacket.writeToTicket():INVALID_TICKET] Could not write the packet to the ticket, missing ticket object within the packet object.");
 		if(!this.isLocked())
-			throw new RuntimeException("[Packet.writeToTicket():MUST_LOCK_PACKET] Could not write the packet to the ticket, Packet must be in a locked state before sending.");
+			throw new RuntimeException("[SymmetricalPacket.writeToTicket():MUST_LOCK_PACKET] Could not write the packet to the ticket, Packet must be in a locked state before sending.");
 		this.writeToPacket();
 	}
 	

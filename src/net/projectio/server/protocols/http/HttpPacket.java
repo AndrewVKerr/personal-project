@@ -12,7 +12,7 @@ import net.projectio.utils.exceptions.TimedOutException;
 
 /**
  * 
- * @author ThePuppet
+ * @author Andrew Kerr
  */
 public class HttpPacket extends AsymmetricalPacket{
 	
@@ -59,7 +59,7 @@ public class HttpPacket extends AsymmetricalPacket{
 	 * <tr><td>CONNECT</td><td>Client wishes to open a tunnel with the server.</td><td><span style="color:rgb(0,255,0)">&#10003;</span></td><td><span style="color:rgb(255,0,0)">&#10007;</span></td></tr>
 	 * </table>
 	 * @since 9/13/2019
-	 * @author ThePuppet
+	 * @author Andrew Kerr
 	 */
 	public static enum Methods{
 		/**

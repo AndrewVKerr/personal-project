@@ -6,6 +6,7 @@ import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.nio.file.Files;
 
+import net.projectio.server.protocols.Protocol;
 import net.projectio.server.protocols.http.Http;
 import net.projectio.server.protocols.http.HttpPacket;
 
@@ -16,6 +17,10 @@ public class Ticket implements Runnable {
 	
 	private Packet lastPacket;
 	public final Packet lastPacket() { return this.lastPacket; };
+	
+	private Protocol<?> protocol;
+	public final Protocol<?> protocol(){ return this.protocol; };
+	
 	
 	public void write(byte[] data) throws IOException{
 		if(socket.getOutputStream() == null || socket.isOutputShutdown())
@@ -72,13 +77,17 @@ public class Ticket implements Runnable {
 			packet.readFromTicket();
 			System.out.println(packet.Url());
 			
-			HttpPacket response = Http.protocol.generateNewPacketObject(this);
-			response.Version("Http/1.1");
-			response.StatusCode(200);
-			response.setHeaderValue("Test", "Hello");
-			response.Payload("Hello World!".getBytes());
-			response.lock();
-			response.writeToTicket();
+			if(packet.Url().equals("/Websocket")) {
+				
+			}else {
+				HttpPacket response = Http.protocol.generateNewPacketObject(this);
+				response.Version("Http/1.1");
+				response.StatusCode(200);
+				response.setHeaderValue("Test", "Hello");
+				response.Payload("Hello World!".getBytes());
+				response.lock();
+				response.writeToTicket();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

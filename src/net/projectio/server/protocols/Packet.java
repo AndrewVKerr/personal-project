@@ -8,7 +8,7 @@ import net.projectio.utils.exceptions.ValueAlreadySetException;
  * This abstract class serves as a means to standardize what some of the packets will have access too.
  * For example a {@linkplain Ticket} object will be attached as a means to reference back to the object
  * that generated this Packet object.
- * @author ThePuppet
+ * @author Andrew Kerr
  */
 public abstract class Packet {
 
