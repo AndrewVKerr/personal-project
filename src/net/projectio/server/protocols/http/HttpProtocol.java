@@ -4,10 +4,10 @@ import net.projectio.server.Ticket;
 import net.projectio.server.protocols.Packet;
 import net.projectio.server.protocols.Protocol;
 
-public class HttpProtocol extends Protocol<HttpPacket>{
+public class HttpProtocol<P extends Packet> extends Protocol<P>{
 
-	@Override
-	public Packet generateNewPacketObject(Ticket ticket) {
+	@SuppressWarnings("unchecked")
+	public P generateNewPacketObject(Ticket ticket) {
 		HttpPacket packet = new HttpPacket();
 		try {
 			packet.ticket(ticket);
@@ -16,7 +16,9 @@ public class HttpProtocol extends Protocol<HttpPacket>{
 			re.addSuppressed(e);
 			throw re;
 		}
-		return packet;
+		if(packet instanceof Packet)
+			return (P) packet;
+		return null;
 	}
 	
 }

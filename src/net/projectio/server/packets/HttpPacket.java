@@ -7,7 +7,6 @@ import java.util.HashMap;
 
 import net.projectio.server.Packet;
 import net.projectio.server.Ticket;
-import net.projectio.utils.Debugger;
 import net.projectio.utils.exceptions.TimedOutException;
 
 public class HttpPacket extends Packet {

@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-import com.sun.jdi.Value;
-
 import net.projectio.server.Packet;
 import net.projectio.server.Ticket;
 import net.projectio.utils.resources.Websocket;

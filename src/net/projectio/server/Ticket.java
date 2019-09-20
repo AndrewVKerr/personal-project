@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
-import java.net.SocketException;
 import java.nio.file.Files;
 
-import javax.swing.JOptionPane;
-
+import net.projectio.server.protocols.http.Http;
 import net.projectio.server.protocols.http.HttpPacket;
-import net.projectio.server.protocols.http.HttpProtocol;
 
 public class Ticket implements Runnable {
 
@@ -70,12 +67,12 @@ public class Ticket implements Runnable {
 	@Override
 	public void run() {
 		
-		HttpPacket packet = (HttpPacket) new HttpProtocol().generateNewPacketObject(this);
+		HttpPacket packet = Http.protocol.generateNewPacketObject(this);
 		try {
 			packet.readFromTicket();
 			System.out.println(packet.Url());
 			
-			HttpPacket response = (HttpPacket) new HttpProtocol().generateNewPacketObject(this);
+			HttpPacket response = Http.protocol.generateNewPacketObject(this);
 			response.Version("Http/1.1");
 			response.StatusCode(200);
 			response.setHeaderValue("Test", "Hello");
