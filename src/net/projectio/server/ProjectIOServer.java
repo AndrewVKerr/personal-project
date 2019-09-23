@@ -18,7 +18,7 @@ public class ProjectIOServer implements Runnable{
 	public final ExecutorService pool = Executors.newCachedThreadPool();
 	
 	public ProjectIOServer() throws IOException {
-		this.server = new ServerSocket(80);
+		this.server = new ServerSocket(2000);
 		this.fileTree = new ResourceTree();
 	}
 

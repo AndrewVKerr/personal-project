@@ -10,7 +10,7 @@ import net.projectio.server.packets.HttpPacket;
 import net.projectio.server.packets.WebSocketPacket;
 import net.projectio.server.packets.WebSocketPacket.WebSocketFrame;
 
-public class Websocket extends Resource{
+public class Websocket {}/*extends Resource{
 	
 	private WebsocketHandler handler = null;
 	public WebsocketHandler handler() { return this.handler; };
@@ -80,4 +80,4 @@ public class Websocket extends Resource{
 		}
 	}
 
-}
+}*/

@@ -3,7 +3,9 @@ package net.projectio.server.protocols.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import net.projectio.server.packets.WebSocketPacket;
 
@@ -93,12 +95,80 @@ public final class WebsocketFrame{
 	public int[] maskKeys() { return this.maskKeys; };
 	public void maskKeys(int i, int value) { if(locked()){return;}; this.maskKeys[i] = value; };
 	
-	private ArrayList<Integer> payload = new ArrayList<Integer>();
-	public int[] payload() { int[] b = new int[this.payload.size()]; for(int i = 0; i < this.payload.size(); i++) {b[i] = this.payload.get(i); }; return b; };
-	public byte[] payloadBytes() { byte[] b = new byte[this.payload.size()]; for(int i = 0; i < this.payload.size(); i++) {b[i] = this.payload.get(i).byteValue(); }; return b; };
-	public void payload(byte value) { if(locked()){return;}; this.payload.add((int)value); };
-	public void payload(int value) { if(locked()){return;}; this.payload.add((int)value); };
-	public void payload(String value) { if(locked()){return;}; for(byte c : value.getBytes()) {this.payload.add((int)c); };}
+	public static class Payload{
+		
+		/*private long length = 0;
+		private int[][] bays = new int[4][256]; //TODO: Reminder, this extra one entry may not be needed!!!*/
+		
+		private String data = "";
+		
+		public int getInteger(long index) {
+			return (data.chars().toArray()[(int) index]);
+			/*System.out.println("getInteger: "+Long.compareUnsigned(index, length));
+			if(0>=Long.compareUnsigned(index, length))
+				throw new IndexOutOfBoundsException("There is no value at the provided index! "+Long.toUnsignedString(index));
+			
+			if(0<Long.compareUnsigned(index, (int) (Math.pow(2, 8)))) {//Bay 2
+				int i = (int)(index-(int) (Math.pow(2, 8)));
+				return bays[1][i];
+			}else {//Bay 1
+				return bays[0][(int)index];
+			}*/
+		}
+		
+		public void setInteger(long index, int value) {
+			data += (char)value;
+			/*boolean bay1 = 0>=Long.compareUnsigned(index, 256);
+			boolean bay2 = 0<=Long.compareUnsigned(index, 257) && 0>=Long.compareUnsigned(index, 514);
+			boolean bay3 = 0<=Long.compareUnsigned(index, 514) && 0>=Long.compareUnsigned(index, 771);
+			System.out.println("Bay available: "+(bay1 ? "1" : "")+(bay2 ? " 2" : "")+(bay3 ? " 3" : "")+" 4");
+			if(bay1) {
+				System.out.println("Bay 1! "+index+"; "+index);
+				bays[0][(int)index-1] = value;
+				if(0>Long.compareUnsigned(index, length)) {
+					length = index;
+				}
+			}else
+			if(bay2) {
+				try {System.in.read();}catch(Exception e){};
+				int i = (int)(index-257);
+				System.out.println("Bay 2! "+index+"; "+i);
+				bays[1][i] = value;
+				if(0>Long.compareUnsigned(i, length)) {
+					length = i;
+				}
+			}else
+			if(bay3) {
+				System.out.println("Bay 3!");
+				int i = (int)(index-514);
+				bays[2][i] = value;
+				if(0>Long.compareUnsigned(i, length)) {
+					length = i;
+				}
+			}else {
+				System.out.println("Bay 4!");
+				int i = (int)(index-771);
+				bays[3][i] = value;
+				if(0>Long.compareUnsigned(i, length)) {
+					length = i;
+				}
+			}*/
+		}
+		
+		public long size() {
+			return data.length();//return length;
+		}
+		
+		public char[] values(){
+			return data.toCharArray();
+			//return this.bays.clone();
+		}
+	}
+	
+	private Payload payload = new Payload();
+	public Payload payload(){ return this.payload; };
+	//public void payload(long key, byte value) { if(locked()){return;}; this.payload.put(key, (int)value); };
+	//public void payload(long key, int value) { if(locked()){return;}; this.payload.put(key,  (int)value); };
 	
 	/**
 	 * Sends this frame out through the given OutputStream, if the clientMode parameter is set to true
@@ -118,12 +188,19 @@ public final class WebsocketFrame{
 		bite = toBinStr(clientMode)+(this.length < 125 ? toBinStr(this.length, 7) : "1111110");
 		out.write(Integer.parseUnsignedInt(bite, 2));
 		if(this.length > 125) {//TODO:Add Support for more then 125 values;
-			throw new IOException("Payload length exceeds current max, >125!");
+			if(this.length == 126) {
+				bite = toBinStr(this.length,32);
+				out.write(Integer.parseUnsignedInt(bite,2));
+			}else {
+				bite = toBinStr(this.length,64);
+				out.write(Integer.parseUnsignedInt(bite,2));
+			}
+			//throw new IOException("Payload length exceeds current max, >125!");
 		}
 		if(clientMode) {//TODO:Add ClientMode Support!
 			throw new IOException("Failed to send due to clientMode not being supported yet!");
 		}
-		for(int i : this.payload) {
+		for(char i : this.payload.values()) {
 			out.write(i);
 		}
 		out.flush();
@@ -139,5 +216,9 @@ public final class WebsocketFrame{
 	
 	private String toBinStr(long bite, int len) {
 		return String.format("%"+len+"s",Long.toBinaryString(bite)).replace(' ', '0');
+	}
+	
+	public boolean isNegative(long value) {
+	    return (0 != (value & 0x8000000000000000L));
 	}
 }

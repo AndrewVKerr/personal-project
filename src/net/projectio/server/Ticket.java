@@ -7,8 +7,12 @@ import java.net.Socket;
 import java.nio.file.Files;
 
 import net.projectio.server.protocols.Protocol;
+import net.projectio.server.protocols.Packet;
 import net.projectio.server.protocols.http.Http;
 import net.projectio.server.protocols.http.HttpPacket;
+import net.projectio.server.protocols.websocket.Websocket;
+import net.projectio.server.protocols.websocket.WebsocketConnection;
+import net.projectio.server.protocols.websocket.WebsocketFrame;
 
 public class Ticket implements Runnable {
 
@@ -76,9 +80,26 @@ public class Ticket implements Runnable {
 		try {
 			packet.readFromTicket();
 			System.out.println(packet.Url());
+			this.lastPacket = packet;
 			
 			if(packet.Url().equals("/Websocket")) {
-				
+				WebsocketConnection web = Websocket.protocol.generateNewPacketObject(this);
+				web.switchToWebsocket(Http.class);
+				this.lastPacket = web;
+				System.out.println("Reading!");
+				while(true) {
+					try {
+						System.out.println("1");
+						WebsocketFrame frame = web.getNextFrame(this.socket.getInputStream());
+						System.out.println("2");
+						System.out.println("Frame Len: "+frame.length());
+						System.out.println("3");
+						System.out.println(new String(frame.payload().values()));
+						System.out.println("4");
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}else {
 				HttpPacket response = Http.protocol.generateNewPacketObject(this);
 				response.Version("Http/1.1");
