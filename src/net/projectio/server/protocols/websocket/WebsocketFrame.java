@@ -3,10 +3,8 @@ package net.projectio.server.protocols.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
 
+import net.projectio.server.Ticket;
 import net.projectio.server.packets.WebSocketPacket;
 
 /**
@@ -18,20 +16,20 @@ public final class WebsocketFrame{
 	
 	protected WebsocketFrame() { owner = null; };
 	
-	public WebsocketFrame(Websocket websocket) { 
+	public WebsocketFrame(Ticket websocket) { 
 		if(websocket == null) 
 			throw new NullPointerException("[WebsocketFrame(Websocket):NON_NULL_VALUE_EXPECTED] Expected a non null value for the \"websocket\" parameter.");
 		owner = websocket; 
 	};
 
-	/**This is the {@linkplain Websocket} that was provided during the creation of the Frame.
+	/**This is the {@linkplain Ticket} that was provided during the creation of the Frame.
 	 * If this value is a null pointer value then this object was generated during the reading of a
 	 * {@linkplain InputStream} under the function {@linkplain WebSocketPacket}.getNextFrame({@linkplain InputStream});
 	 */
-	public final Websocket owner;
+	public final Ticket owner;
 	
-	/**This boolean value is used to inform the {@linkplain Websocket} that generated this object that
-	 * this frame is going to be sent to the connected client. Will only work if a {@linkplain Websocket}
+	/**This boolean value is used to inform the {@linkplain Ticket} that generated this object that
+	 * this frame is going to be sent to the connected client. Will only work if a {@linkplain Ticket}
 	 * generated this object, will not work if you just create a new packet.
 	 */
 	private boolean submitFrame = false;
@@ -97,76 +95,86 @@ public final class WebsocketFrame{
 	
 	public static class Payload{
 		
-		/*private long length = 0;
-		private int[][] bays = new int[4][256]; //TODO: Reminder, this extra one entry may not be needed!!!*/
+		private String data;
+		private int chr;
+		private Payload child;
+		private Payload parent;
 		
-		private String data = "";
-		
-		public int getInteger(long index) {
-			return (data.chars().toArray()[(int) index]);
-			/*System.out.println("getInteger: "+Long.compareUnsigned(index, length));
-			if(0>=Long.compareUnsigned(index, length))
-				throw new IndexOutOfBoundsException("There is no value at the provided index! "+Long.toUnsignedString(index));
-			
-			if(0<Long.compareUnsigned(index, (int) (Math.pow(2, 8)))) {//Bay 2
-				int i = (int)(index-(int) (Math.pow(2, 8)));
-				return bays[1][i];
-			}else {//Bay 1
-				return bays[0][(int)index];
-			}*/
+		private Payload(Payload parent) {
+			this.parent = parent;
 		}
 		
-		public void setInteger(long index, int value) {
-			data += (char)value;
-			/*boolean bay1 = 0>=Long.compareUnsigned(index, 256);
-			boolean bay2 = 0<=Long.compareUnsigned(index, 257) && 0>=Long.compareUnsigned(index, 514);
-			boolean bay3 = 0<=Long.compareUnsigned(index, 514) && 0>=Long.compareUnsigned(index, 771);
-			System.out.println("Bay available: "+(bay1 ? "1" : "")+(bay2 ? " 2" : "")+(bay3 ? " 3" : "")+" 4");
-			if(bay1) {
-				System.out.println("Bay 1! "+index+"; "+index);
-				bays[0][(int)index-1] = value;
-				if(0>Long.compareUnsigned(index, length)) {
-					length = index;
-				}
-			}else
-			if(bay2) {
-				try {System.in.read();}catch(Exception e){};
-				int i = (int)(index-257);
-				System.out.println("Bay 2! "+index+"; "+i);
-				bays[1][i] = value;
-				if(0>Long.compareUnsigned(i, length)) {
-					length = i;
-				}
-			}else
-			if(bay3) {
-				System.out.println("Bay 3!");
-				int i = (int)(index-514);
-				bays[2][i] = value;
-				if(0>Long.compareUnsigned(i, length)) {
-					length = i;
-				}
-			}else {
-				System.out.println("Bay 4!");
-				int i = (int)(index-771);
-				bays[3][i] = value;
-				if(0>Long.compareUnsigned(i, length)) {
-					length = i;
-				}
-			}*/
+		private Payload() {
+			this.parent = null;
 		}
 		
 		public long size() {
 			return data.length();//return length;
 		}
 		
-		public char[] values(){
-			return data.toCharArray();
-			//return this.bays.clone();
+		public int read(){
+			return this.chr;
 		}
+		
+		public void write(int chr){
+			if(this.child == null) {
+				this.child = new Payload();
+				this.child.chr = chr;
+			}else {
+				this.child.write(chr);
+			}
+		}
+		
+		public void write(String str) {
+			if(this.child == null) {
+				this.child = new Payload();
+				this.child.write(str.substring(1));
+			}else {
+				this.child.write(str.substring(1));
+			}
+		}
+		
+		public Payload next() {
+			return this.child;
+		}
+		
+		public Payload back() {
+			return this.parent;
+		}
+		
+		public Payload toStart() {
+			if(this.parent == null) {
+				return this;
+			}else {
+				return this.parent.toStart();
+			}
+		}
+		
+		public Payload toEnd() {
+			if(this.child == null) {
+				return this;
+			}else {
+				return this.child.toEnd();
+			}
+		}
+		
+		public boolean isStart() {
+			return (this.parent == null);
+		}
+		
+		public boolean isEnd() {
+			return (this.child == null);
+		}
+		
 	}
 	
 	private Payload payload = new Payload();
 	public Payload payload(){ return this.payload; };
+	public void payload(String str) {
+		if(locked()) {return;};
+		payload = new Payload();
+		payload.write(str);
+	}
 	//public void payload(long key, byte value) { if(locked()){return;}; this.payload.put(key, (int)value); };
 	//public void payload(long key, int value) { if(locked()){return;}; this.payload.put(key,  (int)value); };
 	
@@ -179,7 +187,8 @@ public final class WebsocketFrame{
 	 * @throws IOException 
 	 * @throws NumberFormatException 
 	 */
-	public void sendFrame(OutputStream out, boolean clientMode) throws NumberFormatException, IOException {
+	public void sendFrame(boolean clientMode) throws NumberFormatException, IOException {
+		OutputStream out = this.owner.socket.getOutputStream();
 		this.length = payload.size();
 		this.fin = true;
 		String bite = "";
@@ -200,8 +209,10 @@ public final class WebsocketFrame{
 		if(clientMode) {//TODO:Add ClientMode Support!
 			throw new IOException("Failed to send due to clientMode not being supported yet!");
 		}
-		for(char i : this.payload.values()) {
-			out.write(i);
+		Payload payload = this.payload();
+		while(!payload.isEnd()) {
+			out.write(payload.read());
+			payload = payload.next();
 		}
 		out.flush();
 	}

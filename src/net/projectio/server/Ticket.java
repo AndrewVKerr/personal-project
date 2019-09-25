@@ -13,6 +13,7 @@ import net.projectio.server.protocols.http.HttpPacket;
 import net.projectio.server.protocols.websocket.Websocket;
 import net.projectio.server.protocols.websocket.WebsocketConnection;
 import net.projectio.server.protocols.websocket.WebsocketFrame;
+import net.projectio.server.protocols.websocket.WebsocketFrame.Payload;
 
 public class Ticket implements Runnable {
 
@@ -90,16 +91,28 @@ public class Ticket implements Runnable {
 				while(true) {
 					try {
 						System.out.println("1");
-						WebsocketFrame frame = web.getNextFrame(this.socket.getInputStream());
+						WebsocketFrame frame = web.getNextFrame();
 						System.out.println("2");
 						System.out.println("Frame Len: "+frame.length());
 						System.out.println("3");
-						System.out.println(new String(frame.payload().values()));
+						Payload payload = frame.payload();
+						while(!payload.isEnd()) {
+							System.out.print((char)payload.read());
+							payload = payload.next();
+						}
 						System.out.println("4");
+						WebsocketFrame f = web.createResponse();
+						f.opcode((byte)1);
+						f.payload("Hello World!");
+						f.sendFrame(false);
 					}catch(Exception e) {
+						if(e instanceof NumberFormatException)
+							break;
 						e.printStackTrace();
 					}
 				}
+				System.out.println("Closing Websocket Connection!");
+				
 			}else {
 				HttpPacket response = Http.protocol.generateNewPacketObject(this);
 				response.Version("Http/1.1");

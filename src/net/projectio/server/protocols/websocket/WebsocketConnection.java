@@ -16,7 +16,8 @@ import net.projectio.server.protocols.websocket.WebsocketFrame.Payload;
 
 public class WebsocketConnection extends Packet {
 	
-	public WebsocketFrame getNextFrame(InputStream in) throws IOException {
+	public WebsocketFrame getNextFrame() throws IOException {
+		InputStream in = this.ticket().socket.getInputStream();
 		System.out.println("Reading next frame!");
 		String f = "";
 		WebsocketFrame frame = new WebsocketFrame();
@@ -51,7 +52,7 @@ public class WebsocketConnection extends Packet {
 			bite = this.getNextByte(in);f+=bite;
 			byte b = Byte.parseByte(Integer.toBinaryString(Integer.parseInt(bite, 2) ^ frame.maskKeys()[j]),2);
 			try {
-				frame.payload().setInteger(l, b);
+				frame.payload().write(b);
 			}catch(Exception e) {
 				System.err.println(e.getLocalizedMessage()+": "+l+"; "+b);
 			}
@@ -74,6 +75,10 @@ public class WebsocketConnection extends Packet {
 		int i = in.read();
 		String b = Integer.toBinaryString(i);
 		return b;
+	}
+	
+	public WebsocketFrame createResponse() {
+		return new WebsocketFrame(this.ticket());
 	}
 
 	public void switchToWebsocket(Class<? extends Protocol<?>> clazz) throws NullPointerException, IOException {
