@@ -95,75 +95,59 @@ public final class WebsocketFrame{
 	
 	public static class Payload{
 		
-		private String data;
-		private int chr;
-		private Payload child;
-		private Payload parent;
-		
-		private Payload(Payload parent) {
-			this.parent = parent;
-		}
-		
-		private Payload() {
-			this.parent = null;
-		}
-		
-		public long size() {
-			return data.length();//return length;
-		}
-		
-		public int read(){
-			return this.chr;
-		}
-		
-		public void write(int chr){
-			if(this.child == null) {
-				this.child = new Payload();
-				this.child.chr = chr;
-			}else {
-				this.child.write(chr);
+		public class PayloadItem{
+			
+			private PayloadItem next;
+			private PayloadItem prev;
+			private int stored = -1;
+			
+			public PayloadItem getNext() {
+				return this.next;
+			}
+			
+			public PayloadItem getPrev() {
+				return this.prev;
+			}
+			
+			public int getStored() {
+				return stored;
+			}
+
+			public boolean hasNext() {
+				return (this.next != null);
 			}
 		}
 		
-		public void write(String str) {
-			if(this.child == null) {
-				this.child = new Payload();
-				this.child.write(str.substring(1));
+		private PayloadItem rootItem;
+		private PayloadItem currItem;
+		
+		public void reset() {
+			currItem = rootItem;
+		}
+		
+		public void write(int store) {
+			if(currItem == null) {
+				if(rootItem == null) {
+					rootItem = new PayloadItem();
+				}
+				this.reset();
 			}else {
-				this.child.write(str.substring(1));
+				currItem.stored = store;
+				if(currItem.hasNext()) {
+					currItem = currItem.getNext();
+				}else {
+					currItem.next = new PayloadItem();
+					currItem = currItem.getNext();
+				}
 			}
 		}
 		
-		public Payload next() {
-			return this.child;
-		}
-		
-		public Payload back() {
-			return this.parent;
-		}
-		
-		public Payload toStart() {
-			if(this.parent == null) {
-				return this;
-			}else {
-				return this.parent.toStart();
+		public PayloadItem read() {
+			PayloadItem pi = this.currItem;
+			if(pi.hasNext()) {
+				currItem = pi.getNext();
 			}
-		}
-		
-		public Payload toEnd() {
-			if(this.child == null) {
-				return this;
-			}else {
-				return this.child.toEnd();
-			}
-		}
-		
-		public boolean isStart() {
-			return (this.parent == null);
-		}
-		
-		public boolean isEnd() {
-			return (this.child == null);
+			return pi;
 		}
 		
 	}

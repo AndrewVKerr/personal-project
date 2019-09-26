@@ -92,18 +92,21 @@ public class Ticket implements Runnable {
 					try {
 						System.out.println("1");
 						WebsocketFrame frame = web.getNextFrame();
+						if(frame.opcode() == (byte)8)
+							break;
 						System.out.println("2");
-						System.out.println("Frame Len: "+frame.length());
+						System.out.println("Frame Len: "+frame.length()+", "+frame.payload().size());
 						System.out.println("3");
 						Payload payload = frame.payload();
-						while(!payload.isEnd()) {
-							System.out.print((char)payload.read());
+						while(payload != null) {
+							System.out.println((char)payload.read());
 							payload = payload.next();
 						}
 						System.out.println("4");
 						WebsocketFrame f = web.createResponse();
 						f.opcode((byte)1);
 						f.payload("Hello World!");
+						f.lock();
 						f.sendFrame(false);
 					}catch(Exception e) {
 						if(e instanceof NumberFormatException)
