@@ -30,15 +30,13 @@ public class WebsocketConnection extends Packet {
 		frame.opcode(Byte.parseByte(bite.substring(4), 2));
 		bite = this.getNextByte(in);f+=bite;
 		frame.mask((bite.charAt(0) == '1'));
-		frame.length(Long.parseLong(bite.substring(1),2));
-		if(frame.length() > 125) {
-			if(frame.length() == 126) { //Next 32 bits are length! TODO: This line is being read in wrong, when presented with a 256 byte value it assumes it is a 1411 byte value?
-				bite = this.getNextNBytes(in,4);f+=bite;
-				System.out.println("Length: "+bite+"; "+Long.toUnsignedString(Long.parseUnsignedLong(bite, 2)));
-				frame.length(Long.parseUnsignedLong(bite, 2));
-			}else { //Next 64 bits are length!
-				bite = this.getNextNBytes(in,8);f+=bite;
-				frame.length(Long.parseUnsignedLong(bite, 2));
+		WebsocketLength len = frame.length();
+		len.setValue(Long.parseLong(bite.substring(1),2));
+		if(len.get7BitValue() > 125) {
+			if(len.get7BitValue() == 126) {
+				len.setValue(Long.parseLong(this.getNextNBytes(in, 2)));
+			}else {
+				len.setValue(Long.parseLong(this.getNextNBytes(in, 8)));
 			}
 		}
 		if(frame.mask()) {
@@ -48,16 +46,32 @@ public class WebsocketConnection extends Packet {
 			}
 		}
 		int j = 0;
-		for(long l = 0; Long.compareUnsigned(l,frame.length())<0; l++) {
+		System.out.println("7Bit Value: "+frame.length().get7BitValue());	
+		if(frame.length().get7BitValue() < 125) {
+			for(byte b = 0; b < frame.length().get7BitValue(); b++) {
+				bite = this.getNextByte(in);f+=bite;
+				frame.payload().write((Integer.parseUnsignedInt(bite, 2) ^ frame.maskKeys()[j]));
+				j = (j+1) % 4;
+			}
+			frame.payload().reset();
+		}
+		/*
+		long l = 0;
+		while(Long.compareUnsigned(l,frame.length())<0) {
+			System.out.println(Long.toUnsignedString(l,10)+"<"+Long.toUnsignedString(frame.length(),10)+" = "+(Long.compareUnsigned(l,frame.length())<0));
 			bite = this.getNextByte(in);f+=bite;
-			byte b = Byte.parseByte(Integer.toBinaryString(Integer.parseInt(bite, 2) ^ frame.maskKeys()[j]),2);
+			int b = (Integer.parseUnsignedInt(bite, 2) ^ frame.maskKeys()[j]);
 			try {
+				System.out.println("Ping");
 				frame.payload().write(b);
+				System.out.println("Pong");
 			}catch(Exception e) {
 				System.err.println(e.getLocalizedMessage()+": "+l+"; "+b);
 			}
+			l++;
 			j = (j+1) % 4;
-		}
+		}*/
+		System.out.println("DONE");
 		frame.lock();
 		System.out.println("Frame: "+f);
 		return frame;

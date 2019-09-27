@@ -89,18 +89,19 @@ public class Ticket implements Runnable {
 				this.lastPacket = web;
 				System.out.println("Reading!");
 				while(true) {
+					System.out.println("Awaiting user input!");
+					System.in.read();
 					try {
 						System.out.println("1");
 						WebsocketFrame frame = web.getNextFrame();
 						if(frame.opcode() == (byte)8)
 							break;
 						System.out.println("2");
-						System.out.println("Frame Len: "+frame.length()+", "+frame.payload().size());
+						System.out.println("Frame Len: "+frame.length());
 						System.out.println("3");
 						Payload payload = frame.payload();
-						while(payload != null) {
-							System.out.println((char)payload.read());
-							payload = payload.next();
+						for(int i = 0; i < payload.size(); i++) {
+							System.out.println((char)payload.read().getStored());
 						}
 						System.out.println("4");
 						WebsocketFrame f = web.createResponse();
@@ -109,9 +110,9 @@ public class Ticket implements Runnable {
 						f.lock();
 						f.sendFrame(false);
 					}catch(Exception e) {
+						e.printStackTrace();
 						if(e instanceof NumberFormatException)
 							break;
-						e.printStackTrace();
 					}
 				}
 				System.out.println("Closing Websocket Connection!");

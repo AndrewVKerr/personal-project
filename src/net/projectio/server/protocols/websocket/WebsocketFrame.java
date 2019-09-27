@@ -3,9 +3,12 @@ package net.projectio.server.protocols.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
 
 import net.projectio.server.Ticket;
 import net.projectio.server.packets.WebSocketPacket;
+import net.projectio.server.protocols.websocket.WebsocketFrame.Payload;
 
 /**
  * The WebSocketFrame is a object that contains all the information necessary for sending and receiving
@@ -85,9 +88,8 @@ public final class WebsocketFrame{
 	public boolean mask() { return this.mask; };
 	public void mask(boolean value) { if(locked()){return;}; this.mask = value;};
 	
-	private long length = 0;
-	public long length() { return this.length; };
-	public void length(long value) { if(locked()){return;}; this.length = value;};
+	private WebsocketLength length = new WebsocketLength();
+	public WebsocketLength length() { return this.length; };
 	
 	private int[] maskKeys = new int[4];
 	public int[] maskKeys() { return this.maskKeys; };
@@ -101,6 +103,12 @@ public final class WebsocketFrame{
 			private PayloadItem prev;
 			private int stored = -1;
 			
+			public PayloadItem() {};
+			
+			public PayloadItem(PayloadItem last) {
+				this.prev = last;
+			}
+
 			public PayloadItem getNext() {
 				return this.next;
 			}
@@ -116,29 +124,40 @@ public final class WebsocketFrame{
 			public boolean hasNext() {
 				return (this.next != null);
 			}
+
+			public long sizeRoutine() {
+				return (this.next == null ? 1 : this.next.sizeRoutine()+1);
+			}
+			
 		}
 		
 		private PayloadItem rootItem;
 		private PayloadItem currItem;
 		
 		public void reset() {
+			if(rootItem == null)
+				rootItem = new PayloadItem();
 			currItem = rootItem;
 		}
 		
 		public void write(int store) {
 			if(currItem == null) {
-				if(rootItem == null) {
-					rootItem = new PayloadItem();
-				}
 				this.reset();
-			}else {
+			}
+			if(currItem.stored == -1) {
 				currItem.stored = store;
-				if(currItem.hasNext()) {
-					currItem = currItem.getNext();
-				}else {
-					currItem.next = new PayloadItem();
-					currItem = currItem.getNext();
+			}else {
+				if(currItem.hasNext() == false) {
+					currItem.next = new PayloadItem(currItem);
 				}
+				currItem = currItem.getNext();
+				currItem.stored = store;
+			}
+		}
+		
+		public void write(String str) {
+			for(byte b : str.getBytes()) {
+				this.write(b);
 			}
 		}
 		
@@ -148,6 +167,10 @@ public final class WebsocketFrame{
 				currItem = pi.getNext();
 			}
 			return pi;
+		}
+		
+		public long size() {
+			return (this.rootItem == null ? 0 : this.rootItem.sizeRoutine());
 		}
 		
 	}
@@ -172,17 +195,17 @@ public final class WebsocketFrame{
 	 * @throws NumberFormatException 
 	 */
 	public void sendFrame(boolean clientMode) throws NumberFormatException, IOException {
-		OutputStream out = this.owner.socket.getOutputStream();
-		this.length = payload.size();
+		/*OutputStream out = this.owner.socket.getOutputStream();
+		this.length.setValue(payload.size();
 		this.fin = true;
 		String bite = "";
 		bite = toBinStr(this.fin)+toBinStr(this.rsv1)+toBinStr(this.rsv2)+toBinStr(this.rsv3)+toBinStr(this.opcode,4);
 		out.write(Integer.parseUnsignedInt(bite, 2));
-		bite = toBinStr(clientMode)+(this.length < 125 ? toBinStr(this.length, 7) : "1111110");
+		bite = toBinStr(clientMode)+(Long.compareUnsigned(this.length, 125)<0? toBinStr(this.length, 7) : "1111110");
 		out.write(Integer.parseUnsignedInt(bite, 2));
-		if(this.length > 125) {//TODO:Add Support for more then 125 values;
-			if(this.length == 126) {
-				bite = toBinStr(this.length,32);
+		if(Long.compareUnsigned(this.length, 125)<0) {//TODO:Add Support for more then 125 values;
+			if(Long.compareUnsigned(this.length,(long)Math.pow(2, 16))<0) {
+				bite = toBinStr(this.length,16);
 				out.write(Integer.parseUnsignedInt(bite,2));
 			}else {
 				bite = toBinStr(this.length,64);
@@ -194,26 +217,22 @@ public final class WebsocketFrame{
 			throw new IOException("Failed to send due to clientMode not being supported yet!");
 		}
 		Payload payload = this.payload();
-		while(!payload.isEnd()) {
-			out.write(payload.read());
-			payload = payload.next();
+		while(payload != null) {
+			out.write(payload.read().getStored());
 		}
-		out.flush();
+		out.flush();*/
 	}
 	
-	private String toBinStr(boolean bool) {
+	protected static String toBinStr(boolean bool) {
 		return (bool ? "1" : "0");
 	}
 	
-	private String toBinStr(byte bite, int len) {
+	protected static String toBinStr(byte bite, int len) {
 		return String.format("%"+len+"s",Integer.toBinaryString(bite)).replace(' ', '0');
 	}
 	
-	private String toBinStr(long bite, int len) {
+	protected static String toBinStr(long bite, int len) {
 		return String.format("%"+len+"s",Long.toBinaryString(bite)).replace(' ', '0');
 	}
 	
-	public boolean isNegative(long value) {
-	    return (0 != (value & 0x8000000000000000L));
-	}
 }
