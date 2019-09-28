@@ -1,0 +1,23 @@
+<html>
+    <head><title>MCORP Index</title></head>
+    <body>
+        <h1>Hello</h1>
+        <p>Test Paragraph!</p>
+        <div id="Chat" style="border:1px #000 solid;width:300px;height:400px;"></div>
+        <input id="Message" type="text">
+        <button onclick="send()">SEND</button>
+        <script>
+            var chat = document.getElementById("Chat");
+            var msg = document.getElementById("Message");
+            var w = new WebSocket("ws://127.0.0.1:2000/Websocket");
+            w.onmessage = function(e){
+                var elm = document.createElement("p")
+                elm.innerHTML = e.data;
+                chat.append(elm);
+            }
+            function send(){
+                w.send(msg.value);
+            }
+        </script>
+    </body>
+</html>

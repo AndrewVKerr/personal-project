@@ -142,6 +142,8 @@ public class HttpPacket extends AsymmetricalPacket{
 		this.Method = value;
 	}
 	
+	public static long MAX_TIMEOUT = 1000;
+	
 	private String Url = "/";
 	
 	public String Url() { return this.Url; };
@@ -215,7 +217,7 @@ public class HttpPacket extends AsymmetricalPacket{
 		long timeout = System.currentTimeMillis();
 		while(!br.ready()) {
 			//Timeout if client takes more than 500 milliseconds to respond.
-			if(System.currentTimeMillis()-timeout >= 500) {
+			if(System.currentTimeMillis()-timeout >= MAX_TIMEOUT) {
 				//Timeout, client is late to party and server isnt waiting for anyone.
 				throw new TimedOutException("Socket failed to send data in time!");
 			}
@@ -257,7 +259,7 @@ public class HttpPacket extends AsymmetricalPacket{
 					boolean isMore = true;
 					//Use timeout to check if client is sending payload data, if so then retrieve it else break;
 					timeout = System.currentTimeMillis();
-					while(!br.ready()) { if(System.currentTimeMillis()-timeout >= 500) {isMore = false;break;} };
+					while(!br.ready()) { if(System.currentTimeMillis()-timeout >= MAX_TIMEOUT) {isMore = false;break;} };
 					if(isMore) {
 						stage = 2;
 					}else {
@@ -292,7 +294,7 @@ public class HttpPacket extends AsymmetricalPacket{
 			}
 			timeout = System.currentTimeMillis();
 			while(stage > 3 && !br.ready()) {
-				if(System.currentTimeMillis()-timeout >= 500) {
+				if(System.currentTimeMillis()-timeout >= MAX_TIMEOUT) {
 					stage = 3;
 					break;
 				}

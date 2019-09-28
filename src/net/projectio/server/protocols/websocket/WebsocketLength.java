@@ -15,15 +15,25 @@ public class WebsocketLength {
 	private long value64Bit = 0;
 	public long get64BitValue() { return this.value64Bit; };
 	
-	public void setValue(long value) {
+	public void set7BitValue(long value) {
+		System.out.println("RAW LENGTH: "+Long.toUnsignedString(value));
 		if(0>Long.compareUnsigned(value, 125)) {
 			value7Bit = (byte) value;
 		}else {
 			if(0>Long.compareUnsigned(value, (long)Math.pow(2, Short.SIZE))) {
 				value7Bit = (byte) 126;
-				value16Bit = (int) value;
 			}else {
 				value7Bit = (byte) 127;
+			}
+		}
+	}
+	public void setActualValue(long value) {
+		if(value7Bit == 125) {
+			System.err.println("[WebsocketLength.setActualValue(long):7BITVALUE_EQUALS_125] There was an attempt to set a ActualValue when the 7 Bit Value was set to 7 Bit Mode Only!");
+		}else {
+			if(value7Bit == 126) {
+				value16Bit = (int) value;
+			}else {
 				value64Bit = value;
 			}
 		}

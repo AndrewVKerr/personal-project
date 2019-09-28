@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import net.projectio.server.protocols.Protocol;
 import net.projectio.server.protocols.Packet;
@@ -14,6 +15,8 @@ import net.projectio.server.protocols.websocket.Websocket;
 import net.projectio.server.protocols.websocket.WebsocketConnection;
 import net.projectio.server.protocols.websocket.WebsocketFrame;
 import net.projectio.server.protocols.websocket.WebsocketFrame.Payload;
+import net.projectio.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
+import net.projectio.utils.exceptions.TimedOutException;
 
 public class Ticket implements Runnable {
 
@@ -89,8 +92,6 @@ public class Ticket implements Runnable {
 				this.lastPacket = web;
 				System.out.println("Reading!");
 				while(true) {
-					System.out.println("Awaiting user input!");
-					System.in.read();
 					try {
 						System.out.println("1");
 						WebsocketFrame frame = web.getNextFrame();
@@ -100,9 +101,12 @@ public class Ticket implements Runnable {
 						System.out.println("Frame Len: "+frame.length());
 						System.out.println("3");
 						Payload payload = frame.payload();
+						System.out.println("Payload Len: "+payload.size());
 						for(int i = 0; i < payload.size(); i++) {
-							System.out.println((char)payload.read().getStored());
+							PayloadItem pi = payload.read();
+							System.out.println(pi);
 						}
+						System.out.println();
 						System.out.println("4");
 						WebsocketFrame f = web.createResponse();
 						f.opcode((byte)1);
@@ -118,15 +122,34 @@ public class Ticket implements Runnable {
 				System.out.println("Closing Websocket Connection!");
 				
 			}else {
-				HttpPacket response = Http.protocol.generateNewPacketObject(this);
-				response.Version("Http/1.1");
-				response.StatusCode(200);
-				response.setHeaderValue("Test", "Hello");
-				response.Payload("Hello World!".getBytes());
-				response.lock();
-				response.writeToTicket();
+				if(packet.Url().equals("/favicon.ico")) {
+					HttpPacket response = Http.protocol.generateNewPacketObject(this);
+					response.Version("Http/1.1");
+					response.StatusCode(404);
+					response.setHeaderValue("type", "image/png");
+					response.lock();
+					response.writeToTicket();
+				}else {
+					HttpPacket response = Http.protocol.generateNewPacketObject(this);
+					response.Version("Http/1.1");
+					response.StatusCode(200);
+					response.setHeaderValue("Test", "Hello");
+					response.Payload(Files.readAllBytes(new File("/home/andrew/Desktop/GIT/personal-project/server_files/index.html").toPath()));
+					response.lock();
+					response.writeToTicket();
+				}
 			}
 		} catch (Exception e) {
+			if(e instanceof TimedOutException) {
+				try {
+					HttpPacket response = Http.protocol.generateNewPacketObject(this);
+					response.Version("Http/1.1");
+					response.StatusCode(408);
+					response.setHeaderValue("type", "image/png");
+					response.lock();
+					response.writeToTicket();
+				}catch(Exception e1) {}
+			}
 			e.printStackTrace();
 		}
 		try {

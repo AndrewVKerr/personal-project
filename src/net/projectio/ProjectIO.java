@@ -6,11 +6,7 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import net.projectio.server.ProjectIOServer;
-import net.projectio.server.Ticket;
-import net.projectio.server.packets.WebSocketPacket.WebSocketFrame;
 import net.projectio.utils.resources.Webpage;
-import net.projectio.utils.resources.Websocket;
-import net.projectio.utils.resources.WebsocketHandler;
 
 public class ProjectIO {
 	

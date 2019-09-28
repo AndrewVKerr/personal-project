@@ -31,12 +31,12 @@ public class WebsocketConnection extends Packet {
 		bite = this.getNextByte(in);f+=bite;
 		frame.mask((bite.charAt(0) == '1'));
 		WebsocketLength len = frame.length();
-		len.setValue(Long.parseLong(bite.substring(1),2));
+		len.set7BitValue(Long.parseLong(bite.substring(1),2));
 		if(len.get7BitValue() > 125) {
 			if(len.get7BitValue() == 126) {
-				len.setValue(Long.parseLong(this.getNextNBytes(in, 2)));
+				len.setActualValue(Long.parseUnsignedLong(this.getNextNBytes(in, 2),2));
 			}else {
-				len.setValue(Long.parseLong(this.getNextNBytes(in, 8)));
+				len.setActualValue(Long.parseUnsignedLong(this.getNextNBytes(in, 8),2));
 			}
 		}
 		if(frame.mask()) {
@@ -54,6 +54,25 @@ public class WebsocketConnection extends Packet {
 				j = (j+1) % 4;
 			}
 			frame.payload().reset();
+		}else {
+			if(frame.length().get7BitValue() == 126) {
+				System.out.println("16Bit Value: "+frame.length().get16BitValue());
+				for(int i = 0; i < frame.length().get16BitValue(); i++) {
+					bite = this.getNextByte(in);f+=bite;
+					frame.payload().write((Integer.parseUnsignedInt(bite, 2) ^ frame.maskKeys()[j]));
+					j = (j+1) % 4;
+				}
+				frame.payload().reset();
+				System.out.println();
+			}else {
+				long i = 0;
+				while(0<Long.compareUnsigned(frame.length().get64BitValue(), i)) {
+					bite = this.getNextByte(in);f+=bite;
+					frame.payload().write((Integer.parseUnsignedInt(bite, 2) ^ frame.maskKeys()[j]));
+					j = (j+1) % 4;
+					i++;
+				}
+			}
 		}
 		/*
 		long l = 0;

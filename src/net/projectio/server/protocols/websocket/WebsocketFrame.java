@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import net.projectio.server.Ticket;
 import net.projectio.server.packets.WebSocketPacket;
 import net.projectio.server.protocols.websocket.WebsocketFrame.Payload;
+import net.projectio.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
 
 /**
  * The WebSocketFrame is a object that contains all the information necessary for sending and receiving
@@ -103,6 +104,8 @@ public final class WebsocketFrame{
 			private PayloadItem prev;
 			private int stored = -1;
 			
+			private long index = -1;
+			
 			public PayloadItem() {};
 			
 			public PayloadItem(PayloadItem last) {
@@ -129,10 +132,21 @@ public final class WebsocketFrame{
 				return (this.next == null ? 1 : this.next.sizeRoutine()+1);
 			}
 			
+			public String toString() {
+				return this.getClass().getSimpleName()+"[index="+this.index+";stored="+this.stored+"("+(char)this.stored+")]";
+			}
+			
+		}
+		
+		private WebsocketFrame frame;
+		
+		public Payload(WebsocketFrame frame) {
+			this.frame = frame;
 		}
 		
 		private PayloadItem rootItem;
 		private PayloadItem currItem;
+		private long index = 0;
 		
 		public void reset() {
 			if(rootItem == null)
@@ -141,20 +155,32 @@ public final class WebsocketFrame{
 		}
 		
 		public void write(int store) {
+			index++;
+			System.out.print((char) store);
 			if(currItem == null) {
 				this.reset();
 			}
-			if(currItem.stored == -1) {
+			if(currItem == rootItem && currItem.stored == -1) {
 				currItem.stored = store;
+				index = 0;
+				currItem.index = index;
 			}else {
-				if(currItem.hasNext() == false) {
+				if(!currItem.hasNext()) {
 					currItem.next = new PayloadItem(currItem);
 				}
 				currItem = currItem.getNext();
 				currItem.stored = store;
+				currItem.index = index;
 			}
 		}
 		
+		public void recalcSize() {
+			this.frame.length.set7BitValue(this.size());
+			if(this.frame.length.get7BitValue() > 125) {
+				this.frame.length.setActualValue(this.size());
+			}
+		}
+
 		public void write(String str) {
 			for(byte b : str.getBytes()) {
 				this.write(b);
@@ -175,11 +201,10 @@ public final class WebsocketFrame{
 		
 	}
 	
-	private Payload payload = new Payload();
+	private Payload payload = new Payload(this);
 	public Payload payload(){ return this.payload; };
 	public void payload(String str) {
 		if(locked()) {return;};
-		payload = new Payload();
 		payload.write(str);
 	}
 	//public void payload(long key, byte value) { if(locked()){return;}; this.payload.put(key, (int)value); };
@@ -195,20 +220,22 @@ public final class WebsocketFrame{
 	 * @throws NumberFormatException 
 	 */
 	public void sendFrame(boolean clientMode) throws NumberFormatException, IOException {
-		/*OutputStream out = this.owner.socket.getOutputStream();
-		this.length.setValue(payload.size();
+		OutputStream out = this.owner.socket.getOutputStream();
+		this.payload.recalcSize();
 		this.fin = true;
 		String bite = "";
 		bite = toBinStr(this.fin)+toBinStr(this.rsv1)+toBinStr(this.rsv2)+toBinStr(this.rsv3)+toBinStr(this.opcode,4);
 		out.write(Integer.parseUnsignedInt(bite, 2));
-		bite = toBinStr(clientMode)+(Long.compareUnsigned(this.length, 125)<0? toBinStr(this.length, 7) : "1111110");
+		out.flush();
+		bite = toBinStr(clientMode)+toBinStr(this.length.get7BitValue(),7);
 		out.write(Integer.parseUnsignedInt(bite, 2));
-		if(Long.compareUnsigned(this.length, 125)<0) {//TODO:Add Support for more then 125 values;
-			if(Long.compareUnsigned(this.length,(long)Math.pow(2, 16))<0) {
-				bite = toBinStr(this.length,16);
+		out.flush();
+		if(this.length.get7BitValue() > 125) {//TODO:Add Support for more then 125 values;
+			if(this.length.get7BitValue() == 126) {
+				bite = toBinStr(this.length.get16BitValue(),16);
 				out.write(Integer.parseUnsignedInt(bite,2));
 			}else {
-				bite = toBinStr(this.length,64);
+				bite = toBinStr(this.length.get64BitValue(),64);
 				out.write(Integer.parseUnsignedInt(bite,2));
 			}
 			//throw new IOException("Payload length exceeds current max, >125!");
@@ -216,11 +243,31 @@ public final class WebsocketFrame{
 		if(clientMode) {//TODO:Add ClientMode Support!
 			throw new IOException("Failed to send due to clientMode not being supported yet!");
 		}
-		Payload payload = this.payload();
-		while(payload != null) {
-			out.write(payload.read().getStored());
+		PayloadItem pi = this.payload.rootItem;
+		if(this.length().get7BitValue() < 125) {
+			for(byte b = 0; b < this.length().get7BitValue(); b++) {
+				out.write(pi.getStored());
+				pi = pi.getNext();
+			}
+			this.payload().reset();
+		}else {
+			if(this.length().get7BitValue() == 126) {
+				System.out.println("16Bit Value: "+this.length().get16BitValue());
+				for(int i = 0; i < this.length().get16BitValue(); i++) {
+					out.write(pi.getStored());
+					pi = pi.getNext();
+				}
+				this.payload().reset();
+				System.out.println();
+			}else {
+				long i = 0;
+				while(0<Long.compareUnsigned(this.length().get64BitValue(), i)) {
+					out.write(pi.getStored());
+					pi = pi.getNext();
+					i++;
+				}
+			}
 		}
-		out.flush();*/
 	}
 	
 	protected static String toBinStr(boolean bool) {
