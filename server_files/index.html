@@ -1,17 +1,28 @@
 <html>
     <head><title>MCORP Index</title></head>
-    <body>
-        <h1>Hello</h1>
-        <p>Test Paragraph!</p>
-        <div id="Chat" style="border:1px #000 solid;width:300px;height:400px;"></div>
-        <input id="Message" type="text">
-        <button onclick="send()">SEND</button>
+    <body style="background:rgb(150,200,175)">
+        <div style="width:100%;height:50px;text-align:center">
+            <h1>Testing webpage!</h1>
+        </div>
+        <div style="width:100%;min-height:200px;text-align:center;">
+            <div id="Chat" style="text-align:center;border:1px #000 solid;width:calc(100%-20px);min-height:5%;max-height:85%;border-radius:10px;padding:10px;overflow-y:auto;overflow-x:hidden;background:white;">
+                <p style="display:block;">Welcome to the test websocket connection page!</p>
+            </div><br>
+            <input id="Message" style="text-align:left;display:inline-block;width:74%;border:1px #000 solid;border-radius:5px;" type="text">
+            <button onclick="send()" style="display:inline-block;width:24%;border:1px #000 solid;border-radius:5px;">SEND</button>
+        </div>
         <script>
             var chat = document.getElementById("Chat");
             var msg = document.getElementById("Message");
+            msg.onkeypress = function(e){
+                if(e.which == 13) { 
+                    send();
+                }
+            }
             var w = new WebSocket("ws://127.0.0.1:2000/Websocket");
             w.onmessage = function(e){
                 var elm = document.createElement("p")
+                elm.style.display = "block";
                 elm.innerHTML = e.data;
                 chat.append(elm);
             }
