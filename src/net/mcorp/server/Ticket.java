@@ -108,15 +108,17 @@ public class Ticket implements Runnable {
 						System.out.println("3");
 						Payload payload = frame.payload();
 						System.out.println("Payload Len: "+payload.size());
+						String pay_load = "";
 						for(int i = 0; i < payload.size(); i++) {
 							PayloadItem pi = payload.read();
 							System.out.println(pi);
+							pay_load += (char)pi.getStored();
 						}
 						System.out.println();
 						System.out.println("4");
 						WebsocketFrame f = web.createResponse();
 						f.opcode((byte)1);
-						f.payload("Hello World!");
+						f.payload(pay_load);
 						f.lock();
 						f.sendFrame(false);
 					}catch(Exception e) {

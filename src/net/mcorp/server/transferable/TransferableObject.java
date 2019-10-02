@@ -4,7 +4,7 @@ import net.mcorp.server.Ticket;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
 
-public abstract class WebObject extends LockableObject{
+public abstract class TransferableObject extends LockableObject{
 	
 	private String url = "";
 	public String getUrl() { return this.url; };

@@ -27,6 +27,9 @@ public class ProjectIOServer implements Runnable{
 		this.fileTree = new ResourceTree();
 		try {
 			this.test.file(new File("/home/andrew/Desktop/GIT/personal-project/server_files/index.html"));
+			if(!this.test.getFile().exists()) {
+				this.test.file(new File("/home/akerr/GIT/personal-project/server_files/index.html"));
+			}
 		} catch (LockedValueException e) {
 			e.printStackTrace();
 		}

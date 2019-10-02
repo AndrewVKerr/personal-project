@@ -1,27 +1,39 @@
 package net.mcorp.server.transferable;
 
-import java.io.File;
-import java.nio.file.Files;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
-import net.mcorp.server.protocols.http.HttpPacket.Methods;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.exceptions.UnsupportedProtocolException;
 
-public class Webpage extends TransferableObject {
+public class Webimage extends TransferableObject {
 
-	private File file;
-	public File getFile() { return this.file; };
-	public void file(File file) throws LockedValueException { this.isLocked("Webpage.file(File)"); this.file = file; };
+	private byte[] internal_data;
 	
-	public Webpage() {
-		this.file = null; //TODO: Add 404 Not Found webpage handler!
+	private BufferedImage bimg;
+	public BufferedImage getImage() {
+		return bimg;
 	}
 	
-	public Webpage(File file) {
-		this.file = file;
+	public void setImage(BufferedImage bimg) throws LockedValueException {
+		this.isLocked("Webimage.setImage(BufferedImage)");
+		this.bimg = bimg;
+		update();
+	}
+	
+	public void update() {
+		try{
+			ByteArrayOutputStream baos=new ByteArrayOutputStream();
+			ImageIO.write(bimg, "jpg", baos );
+			internal_data=baos.toByteArray();
+		}catch(IOException ie){
+			internal_data=null;
+		}
 	}
 	
 	@Override
@@ -29,7 +41,7 @@ public class Webpage extends TransferableObject {
 		if(ticket.protocol() == Http.protocol) {
 			HttpPacket packet = Http.protocol.generateNewPacketObject(ticket);
 			packet.Version("Http/1.1");
-			if(this.file == null) {
+			if(this.internal_data == null) {
 				packet.StatusCode(404);
 				packet.StatusText("Not Found");
 				packet.Payload("404 Not Found".getBytes());
@@ -37,7 +49,7 @@ public class Webpage extends TransferableObject {
 				try {
 					packet.StatusCode(200);
 					packet.StatusText("OK");
-					packet.Payload(Files.readAllBytes(file.toPath()));
+					packet.Payload(internal_data);
 				}catch(Exception e) {
 					packet.StatusCode(500);
 					packet.StatusText("Internal Server Exception!");
@@ -47,7 +59,7 @@ public class Webpage extends TransferableObject {
 			packet.lock();
 			packet.writeToTicket();
 		}else {
-			throw new UnsupportedProtocolException("Webpage.execute(Ticket)",ticket.protocol());
+			throw new UnsupportedProtocolException("Webimage.execute(Ticket)",ticket.protocol());
 		}
 	}
 
