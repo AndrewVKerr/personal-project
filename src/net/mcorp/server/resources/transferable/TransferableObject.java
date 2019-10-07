@@ -1,4 +1,4 @@
-package net.mcorp.server.transferable;
+package net.mcorp.server.resources.transferable;
 
 import net.mcorp.server.Ticket;
 import net.mcorp.utils.exceptions.LockedValueException;

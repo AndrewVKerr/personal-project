@@ -17,7 +17,7 @@ import net.mcorp.server.protocols.websocket.WebsocketFrame;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
-import net.mcorp.server.transferable.TransferableObject;
+import net.mcorp.server.resources.transferable.TransferableObject;
 import net.mcorp.utils.exceptions.TimedOutException;
 
 public class Ticket implements Runnable {
@@ -101,8 +101,10 @@ public class Ticket implements Runnable {
 				}else {
 					HttpPacket response = Http.protocol.generateNewPacketObject(this);
 					response.Version("Http/1.1");
-					response.StatusCode(404);
+					response.StatusCode(204);
+					response.StatusText("No Content");
 					response.setHeaderValue("type", "plain/text");
+					response.Payload("No Content".getBytes());
 					response.lock();
 					response.writeToTicket();
 				}
