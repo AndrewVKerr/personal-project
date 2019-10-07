@@ -16,12 +16,14 @@ import net.mcorp.server.protocols.websocket.WebsocketConnection;
 import net.mcorp.server.protocols.websocket.WebsocketFrame;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
+import net.mcorp.server.resources.ResourceTree.ResourceUrl;
+import net.mcorp.server.transferable.TransferableObject;
 import net.mcorp.utils.exceptions.TimedOutException;
 
 public class Ticket implements Runnable {
 
 	public final Socket socket;
-	public final ProjectIOServer server;
+	public final Server server;
 	
 	private Packet lastPacket;
 	public final Packet lastPacket() { return this.lastPacket; };
@@ -77,7 +79,7 @@ public class Ticket implements Runnable {
 		this.socket.close();
 	}
 	
-	public Ticket(Socket socket, ProjectIOServer server) {
+	public Ticket(Socket socket, Server server) {
 		this.socket = socket;
 		this.server = server;
 	}
@@ -91,8 +93,28 @@ public class Ticket implements Runnable {
 			packet.readFromTicket();
 			System.out.println(packet.Url());
 			this.lastPacket = packet;
-			
-			if(packet.Url().equals("/Websocket")) {
+			ResourceUrl resourceUrl = this.server.fileTree.getResource(packet.Url(), "/");
+			if(resourceUrl != null) {
+				TransferableObject transferableObj = resourceUrl.resource();
+				if(transferableObj != null) {
+					transferableObj.execute(this);
+				}else {
+					HttpPacket response = Http.protocol.generateNewPacketObject(this);
+					response.Version("Http/1.1");
+					response.StatusCode(404);
+					response.setHeaderValue("type", "plain/text");
+					response.lock();
+					response.writeToTicket();
+				}
+			}else {
+				HttpPacket response = Http.protocol.generateNewPacketObject(this);
+				response.Version("Http/1.1");
+				response.StatusCode(404);
+				response.setHeaderValue("type", "plain/text");
+				response.lock();
+				response.writeToTicket();
+			}
+			/*if(packet.Url().equals("/Websocket")) {
 				WebsocketConnection web = Websocket.protocol.generateNewPacketObject(this);
 				web.switchToWebsocket(Http.class);
 				this.lastPacket = web;
@@ -139,9 +161,8 @@ public class Ticket implements Runnable {
 					response.writeToTicket();
 				}else {
 					System.out.println("Running!");
-					this.server.test.execute(this);
 				}
-			}
+			}*/
 		} catch (Exception e) {
 			if(e instanceof TimedOutException) {
 				try {

@@ -28,7 +28,7 @@ public abstract class LockableObject {
 		this.locked = true; 
 	};
 	
-	protected synchronized static void unlock(LockableObject obj) {
+	public synchronized static void unlock(LockableObject obj) {
 		if(obj.permLock)
 			throw new RuntimeException("[LockableObject.unlock(LockableObject):CANNOT_UNLOCK]This object cannot be unlocked, it has been designated as a permanent lock!");
 		obj.locked = false;
@@ -51,6 +51,18 @@ public abstract class LockableObject {
 			throw new LockedValueException(location);
 		}
 		return false;
+	};
+	
+	/**
+	 * This function will simply return the value of the internal lock.
+	 * @return {@linkplain Boolean} - The state of the lock.
+	 */
+	public synchronized boolean isLocked() {
+		try {
+			return this.isLocked(null);
+		}catch(Exception e) {
+			return true;
+		}
 	};
 	
 }

@@ -10,28 +10,33 @@ import java.util.concurrent.Executors;
 import net.mcorp.server.transferable.Webpage;
 import net.mcorp.utils.Debugger;
 import net.mcorp.utils.exceptions.LockedValueException;
-import net.mcorp.utils.resources.ResourceTree;
+import net.mcorp.utils.lockable.LockableObject;
+import net.mcorp.server.resources.ResourceTree;
 
-public class ProjectIOServer implements Runnable{
+public class Server implements Runnable{
 
 	public final ServerSocket server;
 	
 	public final ResourceTree fileTree;
 	
-	public final Webpage test = new Webpage();
-	
 	public final ExecutorService pool = Executors.newCachedThreadPool();
 	
-	public ProjectIOServer() throws IOException {
+	public Server() throws IOException {
 		this.server = new ServerSocket(2000);
 		this.fileTree = new ResourceTree();
+		
 		try {
-			this.test.file(new File("/home/andrew/Desktop/GIT/personal-project/server_files/index.html"));
-			if(!this.test.getFile().exists()) {
-				this.test.file(new File("/home/akerr/GIT/personal-project/server_files/index.html"));
+			LockableObject.unlock(this.fileTree);
+			Webpage test;
+			this.fileTree.root().createChild("index",test=new Webpage()).createChild("test", new Webpage()).createChild("helloWorld", new Webpage());
+			test.file(new File("/home/andrew/Desktop/GIT/personal-project/server_files/index.html"));
+			if(!test.getFile().exists()) {
+				test.file(new File("/home/akerr/GIT/personal-project/server_files/index.html"));
 			}
 		} catch (LockedValueException e) {
 			e.printStackTrace();
+		}finally {
+			this.fileTree.lock();
 		}
 	}
 
