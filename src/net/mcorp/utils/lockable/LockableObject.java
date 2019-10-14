@@ -13,13 +13,17 @@ import net.mcorp.utils.exceptions.LockedValueException;
 public abstract class LockableObject {
 	
 	private boolean locked = false;
-	private boolean permLock = false;
+	private boolean protectedLock = false;
 	
 	/**
-	 * This function will set an internal value that will prevent this lock from being unlocked. <br>
-	 * NOTE: THIS ACTION CANNOT BE UNDONE!!!
+	 * This function will set an internal value that will prevent the internal lock from being unlocked.
 	 */
-	protected synchronized void permLock() { this.permLock = true; };
+	protected synchronized void lockProtectedLock() { this.protectedLock = true; };
+	
+	/**
+	 * This function will reset a internal value that would prevent the internal lock from being unlocked.
+	 */
+	protected synchronized void unlockProtectedLock() { this.protectedLock = false; };
 	
 	/**
 	 * This function will lock the internal lock and will prevent any values that use this lock to be changed.
@@ -28,9 +32,9 @@ public abstract class LockableObject {
 		this.locked = true; 
 	};
 	
-	public synchronized static void unlock(LockableObject obj) {
-		if(obj.permLock)
-			throw new RuntimeException("[LockableObject.unlock(LockableObject):CANNOT_UNLOCK]This object cannot be unlocked, it has been designated as a permanent lock!");
+	public synchronized static final void unlock(LockableObject obj) {
+		if(obj.protectedLock)
+			throw new RuntimeException("[LockableObject.unlock(LockableObject):CANNOT_UNLOCK]This object cannot be unlocked, it has a internal protected lock that is preventing this function from running.");
 		obj.locked = false;
 	}
 	

@@ -12,7 +12,6 @@ public class ServerTester {
 		try {
 			Server server = new Server();
 			System.out.println(server.fileTree.toString());
-			System.out.println(server.fileTree.getResource("/index/test", "/").toString());
 			//server.fileTree.resources.add(new Webpage("index", new File("C:\\Users\\kerr3\\Desktop\\servers\\test\\index.html")));
 			//server.fileTree.resources.add(new Webpage("favicon.ico",new File("C:\\Users\\kerr3\\Desktop\\servers\\test\\favicon.png")));
 			/*server.fileTree.resources.add(new Websocket("websocket",new WebsocketHandler() {
