@@ -32,6 +32,9 @@ public class Server implements Runnable{
 		File filesDir = new File("/home/andrew/Desktop/GIT/personal-project/server_files/");
 		if(filesDir.exists() == false) {
 			filesDir = new File("/home/akerr/GIT/personal-project/server_files/");
+			if(filesDir.exists() == false) {
+				filesDir = new File("C:/Users/kerr3/Desktop/network/personal-project/server_files/");
+			}
 		}
 		
 		try {
@@ -51,6 +54,7 @@ public class Server implements Runnable{
 			video.update(new File(filesDir.getAbsolutePath()+"/video.mp4"));
 			audio.update(new File(filesDir.getAbsolutePath()+"/faded.mp3"));
 			test.file(new File(filesDir.getAbsolutePath()+"/index.html"));
+			this.fileTree.landing(index);
 		} catch (LockedValueException e) {
 			e.printStackTrace();
 		}finally {
