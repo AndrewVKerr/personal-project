@@ -7,11 +7,6 @@
 
 Adafruit_SSD1306 display(128, 64);  // Create display
 
-
-#include <Fonts/FreeMonoBold12pt7b.h>  // Add a custom font
-#include <Fonts/FreeMono9pt7b.h>  // Add a custom font
-
-
 const byte ROWS = 4; //four rows
 
 const byte COLS = 4; //three columns
@@ -40,7 +35,6 @@ const int feedbackPin = 12;
 
 void setup(){
 
-  Serial.begin(9600);
   pinMode(wrongPin,OUTPUT);
   pinMode(rightPin,OUTPUT);
   pinMode(feedbackPin,OUTPUT);
@@ -63,8 +57,8 @@ void setup(){
   display.dim(0);  //Set brightness (0 is maximun and 1 is a little dim)
 
 
-  display.setFont(&FreeMono9pt7b);  // Set a custom font
-  display.setTextSize(0);
+  //display.setFont(&FreeMono9pt7b);  // Set a custom font
+  //display.setTextSize(0);
   display.setCursor(0, 10);  // (x,y)
   display.println("Restarting");  // Text or value to print
   display.display();
@@ -95,7 +89,6 @@ void loop(){
           digitalWrite(wrongPin, LOW);
           delay(500);
           digitalWrite(rightPin, LOW);
-          Serial.println("Right");
         }else{
           display.println("Incorrect");  // Text or value to print
           display.display();
@@ -103,7 +96,6 @@ void loop(){
           digitalWrite(rightPin, LOW);
           delay(500);
           digitalWrite(wrongPin, LOW);
-          Serial.println("Wrong");
         }
         display.clearDisplay();
         pass = "";
