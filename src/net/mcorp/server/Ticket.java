@@ -3,6 +3,7 @@ package net.mcorp.server;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,42 +27,43 @@ public class Ticket implements Runnable {
 	public final Server server;
 	
 	private Packet lastPacket;
-	public final Packet lastPacket() { return this.lastPacket; };
+	public synchronized final Packet lastPacket() { return this.lastPacket; };
+	
+	private Packet currentPacket;
+	public synchronized final Packet currentPacket() { return this.currentPacket; };
 	
 	private Protocol<?> protocol;
-	public final Protocol<?> protocol(){ return this.protocol; };
-	public final void protocol(Protocol<?> protocol) { 
+	public synchronized final Protocol<?> protocol(){ return this.protocol; };
+	public synchronized final void protocol(Protocol<?> protocol) { 
 		if(protocol == null) 
 			throw new NullPointerException("INVALID_PARAMETER"); 
 		this.protocol = protocol; 
 	};
 	
+	private boolean autoClose = true;
+	public synchronized boolean autoClose() { return this.autoClose; };
+	public synchronized void autoClose(boolean bool) { this.autoClose = bool; };
 	
-	public void write(byte[] data) throws IOException{
+	public synchronized void write(byte[] data) throws IOException{
 		if(socket.getOutputStream() == null || socket.isOutputShutdown())
 			throw new IOException("Output Closed!");
 		socket.getOutputStream().write(data);
 	}
 	
-	public void write(String str) throws IOException{
+	public synchronized void write(String str) throws IOException{
 		this.write(str.getBytes());
 	}
 	
-	public void write(File file) throws IOException{
+	public synchronized void write(File file) throws IOException{
 		this.write(Files.readAllBytes(file.toPath()));
 	}
 	
-	public Packet readPacket(Class<? extends Packet> clazz) throws IOException {
+	public synchronized Packet getPacket(Protocol<?> protocol) throws IOException {
 		try {
-			Constructor<?> constructor;
-			try {
-				constructor = clazz.getConstructor(new Class<?>[] {Ticket.class});
-			}catch(NoSuchMethodException e1) {constructor = null;};
-			if(constructor != null) {
-				Packet p = (Packet) constructor.newInstance(this);
-				this.lastPacket = p;
-				return p;
-			}
+			Packet p = protocol.generateNewPacketObject(this);
+			this.lastPacket = this.currentPacket;
+			this.currentPacket = p;
+			return p;
 		}catch(Exception e) {
 			if(e instanceof IOException) {
 				throw ((IOException) e);
@@ -70,10 +72,13 @@ public class Ticket implements Runnable {
 			io.addSuppressed(e);
 			throw io;
 		}
-		return null;
 	}
 	
-	public void close() throws IOException{
+	public synchronized void flush() throws IOException {
+		this.socket.getOutputStream().flush();
+	}
+	
+	public synchronized void close() throws IOException{
 		if(this.socket.getOutputStream() != null && !this.socket.isOutputShutdown())
 			this.socket.getOutputStream().flush();
 		this.socket.close();
@@ -87,8 +92,8 @@ public class Ticket implements Runnable {
 	@Override
 	public void run() {
 		
-		HttpPacket packet = Http.protocol.generateNewPacketObject(this);
 		try {
+			HttpPacket packet = (HttpPacket) this.getPacket(Http.protocol);
 			this.protocol(Http.protocol);
 			packet.readFromTicket();
 			System.out.println(packet.Url());
@@ -230,10 +235,6 @@ public class Ticket implements Runnable {
 		}
 		try { this.close(); }catch(Exception e) { System.err.println("Could not close socket! "+e.getClass().getSimpleName()+": "+e.getLocalizedMessage());}
 		*/
-	}
-
-	public void flush() throws IOException {
-		this.socket.getOutputStream().flush();
 	}
 	
 }

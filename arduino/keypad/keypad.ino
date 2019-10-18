@@ -61,9 +61,15 @@ void setup(){
   //display.setTextSize(0);
   display.setCursor(0, 10);  // (x,y)
   display.println("Restarting");  // Text or value to print
+  digitalWrite(wrongPin,HIGH);
+  digitalWrite(rightPin,HIGH);
+  digitalWrite(feedbackPin,HIGH);
   display.display();
   delay(3000);
   display.clearDisplay();
+  digitalWrite(wrongPin,LOW);
+  digitalWrite(rightPin,LOW);
+  digitalWrite(feedbackPin,LOW);
 }
 
 String pass = "";

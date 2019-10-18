@@ -114,8 +114,9 @@ public class WebsocketConnection extends Packet {
 		return new WebsocketFrame(this.ticket());
 	}
 
-	public void switchToWebsocket(Class<? extends Protocol<?>> clazz) throws NullPointerException, IOException {
+	/*public void switchToWebsocket(Class<? extends Protocol<?>> clazz) throws NullPointerException, IOException {
 		if(clazz == Http.class) {
+			this.ticket().setPacket(this);
 			HttpPacket packet = (HttpPacket) this.ticket().lastPacket();
 			if(packet.getHeaderValue("Connection").equalsIgnoreCase("Upgrade")) {
 				System.out.println(packet.getHeaderValue("Sec-WebSocket-Key"));
@@ -133,6 +134,6 @@ public class WebsocketConnection extends Packet {
 				System.out.println("Websocket protocol established!");
 			}
 		}
-	}
+	}*/
 	
 }
