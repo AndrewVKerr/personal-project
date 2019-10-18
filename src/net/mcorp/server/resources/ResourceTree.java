@@ -95,6 +95,10 @@ public final class ResourceTree extends LockableObject{
 	
 	private ResourceUrl root = new ResourceUrl(this);
 	public ResourceUrl root() { return this.root; };
+	
+	private ResourceUrl landing = null;
+	public ResourceUrl landing() { return this.landing; };
+	public void landing(ResourceUrl resourceUrl) throws LockedValueException { this.isLocked("ResourceTree.landing(ResourceUrl)"); this.landing = resourceUrl; }; 
 
 	public ResourceTree() {
 		LockableObject.unlock(this);
@@ -113,7 +117,7 @@ public final class ResourceTree extends LockableObject{
 		String[] segs = url.split(regex);
 		int i = 0;
 		ResourceUrl current = root;
-		while(current != null) {
+		while(current != null && segs.length > 0) {
 			while(segs[i].equals(""))
 				i++;
 			ResourceUrl next = current.getNextUrl(segs[i]);
@@ -124,7 +128,7 @@ public final class ResourceTree extends LockableObject{
 			current = next;
 			i++;
 		}
-		return null;
+		return this.landing;
 	}
 	
 	public String toString() {
