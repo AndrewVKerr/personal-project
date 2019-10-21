@@ -22,3 +22,6 @@ The main goal is to create a web based alarm system for a house.
           - [ ] Backup power
      - [0/1] Cameras
           - [ ] Http camera(s)
+
+## Changelog
+     - Created a branch called development
