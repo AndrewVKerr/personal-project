@@ -2,7 +2,7 @@
 This is my personal project for the year 19-20 in the class CSD.
 The main goal is to create a web based alarm system for a house.
 
-## Steps
+## Backlog
      - [0/2] Server
           - [2/4] Web Protocol(s)
                - [X] Http
@@ -22,4 +22,3 @@ The main goal is to create a web based alarm system for a house.
           - [ ] Backup power
      - [0/1] Cameras
           - [ ] Http camera(s)
-     
