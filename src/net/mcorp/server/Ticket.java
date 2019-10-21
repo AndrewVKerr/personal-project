@@ -12,6 +12,7 @@ import net.mcorp.server.protocols.Packet;
 import net.mcorp.server.protocols.Protocol;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
+import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
 import net.mcorp.server.protocols.websocket.Websocket;
 import net.mcorp.server.protocols.websocket.WebsocketConnection;
 import net.mcorp.server.protocols.websocket.WebsocketFrame;
@@ -106,8 +107,7 @@ public class Ticket implements Runnable {
 				}else {
 					HttpPacket response = Http.protocol.generateNewPacketObject(this);
 					response.Version("Http/1.1");
-					response.StatusCode(204);
-					response.StatusText("No Content");
+					response.StatusCode(StandardHttpStatusCodes.No_Content);
 					response.setHeaderValue("type", "plain/text");
 					response.Payload("No Content".getBytes());
 					response.lock();
@@ -116,7 +116,7 @@ public class Ticket implements Runnable {
 			}else {
 				HttpPacket response = Http.protocol.generateNewPacketObject(this);
 				response.Version("Http/1.1");
-				response.StatusCode(404);
+				response.StatusCode(StandardHttpStatusCodes.Not_Found);
 				response.setHeaderValue("type", "plain/text");
 				response.lock();
 				response.writeToTicket();
@@ -175,8 +175,7 @@ public class Ticket implements Runnable {
 				try {
 					HttpPacket response = Http.protocol.generateNewPacketObject(this);
 					response.Version("Http/1.1");
-					response.StatusCode(408);
-					response.StatusText("Client Timed Out");
+					response.StatusCode(StandardHttpStatusCodes.Request_Timeout);
 					response.setHeaderValue("type", "image/png");
 					response.lock();
 					response.writeToTicket();

@@ -161,22 +161,13 @@ public class HttpPacket extends AsymmetricalPacket{
 		this.Version = value;
 	}
 	
-	private int StatusCode = -1;
+	private HttpStatusCode StatusCode = null;
 	
-	public int StatusCode() { return this.StatusCode; };
+	public HttpStatusCode StatusCode() { return this.StatusCode; };
 	
-	public void StatusCode(int code) throws LockedValueException {
+	public void StatusCode(HttpStatusCode code) throws LockedValueException {
 		this.isLocked("HttpPacket.StatusCode(Integer)");
 		this.StatusCode = code;
-	}
-	
-	private String StatusText = null;
-	
-	public String StatusText() { return this.StatusText; };
-	
-	public void StatusText(String text) throws LockedValueException {
-		this.isLocked("HttpPacket.StatusText(String)");
-		this.StatusText = text;
 	}
 	
 	private byte[] Payload = new byte[0];
@@ -240,8 +231,7 @@ public class HttpPacket extends AsymmetricalPacket{
 				if(mode.equals(ConnectionMode.Client)) {
 					Method = Methods.CLIENT_MODE_NONE;
 					Version = s[0];
-					StatusCode = Integer.parseInt(s[1]);
-					StatusText = s[2];
+					StatusCode = HttpStatusCodes.instance.getCode(Integer.parseInt(s[1]));
 				}else {
 					throw new IOException("Unsupported ConnectionMode!!!");
 				}
@@ -301,7 +291,7 @@ public class HttpPacket extends AsymmetricalPacket{
 		OutputStream out = this.ticket().socket.getOutputStream();
 		
 		if(mode.equals(ConnectionMode.Server)) {
-			out.write((Version+" "+StatusCode+" "+StatusText+"\n").getBytes());
+			out.write((Version+" "+StatusCode.getCode()+" "+StatusCode.getText()+"\n").getBytes());
 			for(String key : this.headerValues.keySet()) {
 				out.write((key+": "+this.headerValues.get(key)+"\n").getBytes());
 			}

@@ -15,6 +15,8 @@ import net.mcorp.utils.lockable.LockableObject;
 import net.mcorp.server.resources.ResourceTree;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
 import net.mcorp.server.resources.transferable.WebMedia;
+import net.mcorp.server.resources.transferable.WebOverview;
+import net.mcorp.server.resources.transferable.WebRedirect;
 import net.mcorp.server.resources.transferable.Webpage;
 
 public class Server implements Runnable{
@@ -46,10 +48,11 @@ public class Server implements Runnable{
 			WebMedia image;
 			WebMedia audio;
 			index = this.fileTree.root().createChild("index",test=new Webpage());
-			directory = index.createChild("directory", null);
+			directory = index.createChild("directory", new WebOverview());
 			directory.createChild("image", image = new WebMedia());
 			directory.createChild("video", video = new WebMedia());
 			directory.createChild("faded", audio = new WebMedia());
+			index.createChild("github", new WebRedirect("https://github.com/AndrewVKerr/personal-project"));
 			image.update(new File(filesDir.getAbsolutePath()+"/image.jpg")); // https://www.pexels.com/photo/mountain-with-fog-2539409/
 			video.update(new File(filesDir.getAbsolutePath()+"/video.mp4"));
 			audio.update(new File(filesDir.getAbsolutePath()+"/faded.mp3"));

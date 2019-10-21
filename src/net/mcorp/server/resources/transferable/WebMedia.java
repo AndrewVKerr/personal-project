@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
+import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
 import net.mcorp.server.resources.MIMEType;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.exceptions.UnsupportedProtocolException;
@@ -57,23 +58,19 @@ public class WebMedia extends TransferableObject {
 			HttpPacket packet = Http.protocol.generateNewPacketObject(ticket);
 			packet.Version("Http/1.1");
 			if(this.internal_data == null) {
-				packet.StatusCode(404);
-				packet.StatusText("Not Found");
+				packet.StatusCode(StandardHttpStatusCodes.Not_Found);
 				packet.Payload("404 Not Found".getBytes());
 			}else {
 				try {
 					if(this.mimeType == MIMEType.NONE) {
-						packet.StatusCode(204);
-						packet.StatusText("No Content (Unset MimeType)");
+						packet.StatusCode(StandardHttpStatusCodes.No_Content);
 					}else {
-						packet.StatusCode(200);
-						packet.StatusText("OK");
+						packet.StatusCode(StandardHttpStatusCodes.Ok);
 						packet.setHeaderValue("Content-Type", this.mimeType.toString());
 						packet.Payload(internal_data);
 					}
 				}catch(Exception e) {
-					packet.StatusCode(500);
-					packet.StatusText("Internal Server Exception!");
+					packet.StatusCode(StandardHttpStatusCodes.Internal_Server_Error);
 					packet.Payload(e.getLocalizedMessage().getBytes());
 				}
 			}
@@ -82,6 +79,14 @@ public class WebMedia extends TransferableObject {
 		}else {
 			throw new UnsupportedProtocolException("Webimage.execute(Ticket)",ticket.protocol());
 		}
+	}
+	
+	public String toString(String indent, String indentBy) {
+		String str = this.getClass().getSimpleName()+"[";
+		str += "\n"+indent+"mimeType = MimeType[\""+this.mimeType+"\"],";
+		str += "\n"+indent+"internalData = byte["+internal_data.length+"]{...}";
+		str += "\n"+indent.substring(0,(indent.length() < indentBy.length() ? indent.length() : indent.length()-indentBy.length()))+"]";
+		return str;
 	}
 
 }

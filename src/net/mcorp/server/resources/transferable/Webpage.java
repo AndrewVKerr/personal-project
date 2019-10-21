@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
+import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
 import net.mcorp.server.protocols.http.HttpPacket.Methods;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.exceptions.UnsupportedProtocolException;
@@ -30,17 +31,14 @@ public class Webpage extends TransferableObject {
 			HttpPacket packet = Http.protocol.generateNewPacketObject(ticket);
 			packet.Version("Http/1.1");
 			if(this.file == null) {
-				packet.StatusCode(404);
-				packet.StatusText("Not Found");
+				packet.StatusCode(StandardHttpStatusCodes.Not_Found);
 				packet.Payload("404 Not Found".getBytes());
 			}else {
 				try {
-					packet.StatusCode(200);
-					packet.StatusText("OK");
+					packet.StatusCode(StandardHttpStatusCodes.Ok);
 					packet.Payload(Files.readAllBytes(file.toPath()));
 				}catch(Exception e) {
-					packet.StatusCode(500);
-					packet.StatusText("Internal Server Exception!");
+					packet.StatusCode(StandardHttpStatusCodes.Internal_Server_Error);
 					packet.Payload(e.getLocalizedMessage().getBytes());
 				}
 			}
@@ -49,6 +47,17 @@ public class Webpage extends TransferableObject {
 		}else {
 			throw new UnsupportedProtocolException("Webpage.execute(Ticket)",ticket.protocol());
 		}
+	}
+	
+	public String toString(String indent, String indentBy) {
+		String str = this.getClass().getSimpleName()+"[";
+		str += "\n"+indent+"file = File[";
+		str += "\n"+indent+indentBy+"name = String[\""+this.file.getName()+"\"],";
+		str += "\n"+indent+indentBy+"path = String[\""+this.file.getPath()+"\"],";
+		str += "\n"+indent+indentBy+"exists = Boolean["+this.file.exists()+"]";
+		str += "\n"+indent+"]";
+		str += "\n"+indent.substring(0,(indent.length() < indentBy.length() ? indent.length() : indent.length()-indentBy.length()))+"]";
+		return str;
 	}
 
 }

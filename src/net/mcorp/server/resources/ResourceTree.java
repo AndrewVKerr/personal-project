@@ -26,11 +26,19 @@ public final class ResourceTree extends LockableObject{
 		
 		public synchronized String urlSegment() { return this.urlSegment; };
 		
+		public synchronized String url() {
+			return (this.parent == null || (this.tree == null ? false : this.parent == this.tree.root) ? "/"+this.urlSegment : this.parent.url()+"/"+this.urlSegment);
+		}
+		
 		private ResourceUrl parent;
 		
 		public synchronized ResourceUrl parent() { return this.parent; };
 		
 		private ArrayList<ResourceUrl> children = new ArrayList<ResourceUrl>();
+		
+		public synchronized ResourceUrl[] getChildren() {
+			return this.children.toArray(new ResourceUrl[] {});
+		}
 		
 		public synchronized ResourceUrl getNextUrl(String urlSegment) {
 			for(ResourceUrl child : children) {
@@ -41,7 +49,7 @@ public final class ResourceTree extends LockableObject{
 			return null;
 		}
 		
-		public ResourceUrl createChild(String urlSegment, TransferableObject transferableObj) throws LockedValueException {
+		public synchronized ResourceUrl createChild(String urlSegment, TransferableObject transferableObj) throws LockedValueException {
 			ResourceUrl child = new ResourceUrl(this.tree);
 			this.addUrl(child);
 			child.urlSegment(urlSegment);
@@ -59,25 +67,30 @@ public final class ResourceTree extends LockableObject{
 		
 		private TransferableObject resource;
 		
-		public TransferableObject resource() { return this.resource; };
+		public synchronized TransferableObject resource() { return this.resource; };
 		
 		public synchronized void resource(TransferableObject resource) throws LockedValueException {
 			if(tree.isLocked()) {
 				throw new LockedValueException("[ResourceUrl.resource(TransferableObject):INTERNAL_TREE_LOCKED] The tree object that owns this ResourceUrl is currently locked and needs to be unlocked before any changes to it or it's children can be done.");
 			}
+			if(this.resource != null)
+				this.resource.url(this);
 			this.resource = resource;
+			if(this.resource != null)
+				this.resource.url(this);
 		};
 		
 		protected ResourceUrl(ResourceTree tree) { this.tree = tree; }
 		
-		public String toString() {
+		public synchronized String toString() {
 			return this.toString("", "   ");
 		}
 		
-		public String toString(String indent, String indentBy) {
+		public synchronized String toString(String indent, String indentBy) {
 			String str = "ResourceUrl[";
 			indent += indentBy;
 			str += "\n"+indent+"tree = "+(tree == null ? "Null_Value" : "ResourceTree[...]")+",";
+			str += "\n"+indent+"resource = "+(resource == null ? "Null_Value" : resource.toString(indent+indentBy,indentBy))+",";
 			str += "\n"+indent+"urlSegment = "+(urlSegment == null ? "Null_Value" : "String[\""+urlSegment+"\"]")+",";
 			str += "\n"+indent+"parent = "+(parent == null ? "Null_Value" : "ResourceUrl[...]")+",";
 			str += "\n"+indent+"children = [";
