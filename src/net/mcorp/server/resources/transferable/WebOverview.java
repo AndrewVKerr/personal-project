@@ -3,8 +3,8 @@ package net.mcorp.server.resources.transferable;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
-import net.mcorp.server.protocols.http.HttpStatusCodes;
-import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
+import net.mcorp.server.protocols.http.statuscodes.HttpStatusCodes;
+import net.mcorp.server.protocols.http.statuscodes.StandardHttpStatusCodes;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
 import net.mcorp.utils.exceptions.UnsupportedProtocolException;
 

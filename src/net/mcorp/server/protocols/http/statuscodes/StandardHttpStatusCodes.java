@@ -1,4 +1,4 @@
-package net.mcorp.server.protocols.http;
+package net.mcorp.server.protocols.http.statuscodes;
 
 /**
  * <style>

@@ -12,7 +12,7 @@ import net.mcorp.server.protocols.Packet;
 import net.mcorp.server.protocols.Protocol;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
-import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
+import net.mcorp.server.protocols.http.statuscodes.StandardHttpStatusCodes;
 import net.mcorp.server.protocols.websocket.Websocket;
 import net.mcorp.server.protocols.websocket.WebsocketConnection;
 import net.mcorp.server.protocols.websocket.WebsocketFrame;

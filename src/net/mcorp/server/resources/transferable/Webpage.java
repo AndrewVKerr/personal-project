@@ -6,8 +6,8 @@ import java.nio.file.Files;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
-import net.mcorp.server.protocols.http.StandardHttpStatusCodes;
 import net.mcorp.server.protocols.http.HttpPacket.Methods;
+import net.mcorp.server.protocols.http.statuscodes.StandardHttpStatusCodes;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.exceptions.UnsupportedProtocolException;
 

@@ -1,4 +1,4 @@
-package net.mcorp.server.protocols.http;
+package net.mcorp.server.protocols.http.statuscodes;
 
 /**
  * This interface was created so that a programmer could define custom codes if they so wished while allowing the custom
