@@ -22,8 +22,17 @@ public final class HttpStatusCodes {
 	}
 	
 	private final HashMap<Integer,HttpStatusCode> codes = new HashMap<Integer,HttpStatusCode>();
+	
 	public HttpStatusCode getCode(int code) {
 		return codes.getOrDefault(code, clientError);
+	}
+	
+	public HttpStatusCode getCode(String text) {
+		for(HttpStatusCode code : codes.values()) {
+			if(code.getText().equals(text))
+				return code;
+		}
+		return null;
 	}
 	
 	public void addCode(HttpStatusCode code) throws Exception {

@@ -17,7 +17,7 @@ package net.mcorp.server.protocols.http.statuscodes;
  * 		text-align:center;
  * 	}
  * </style>
- * <h1>HttpStatusCode(s)</h1>
+ * <h1>StandardHttpStatusCode(s)</h1>
  * <hr>
  * <p>
  * Http status codes are used by the server to respond to the client's
@@ -32,13 +32,26 @@ package net.mcorp.server.protocols.http.statuscodes;
  * In the example the number "200" indicates that the server understood
  * the request and attempted to fulfill it. See "200: Success".
  * <br><br>
- * <b>Note:</b><br>
- * The "IETF" (Internet Engineering Task Force) provides 
- * a lot of documentation about various different
- * protocols. If you wish to know more about what each code does
- * then click
- * <a href="https://tools.ietf.org/html/rfc2616#section-10.1.1">here</a>
- * or use one of the links left throughout the documentation.
+ * 
+ * <b>Some quick things to note:</b><br>
+ * <ul>
+ * 		<li>
+ * 			The "IETF" (Internet Engineering Task Force) provides 
+ * 			a lot of documentation about various different
+ * 			protocols. If you wish to know more about what each code does
+ * 			then click
+ *		 	<a href="https://tools.ietf.org/html/rfc2616#section-10.1.1">here</a>
+ * 			or use one of the links left throughout the documentation.
+ * 		</li>
+ * 		<li>
+ * 			For the purposes of this enum, only the codes defined by the IETF's
+ * 			<b><i>"<a href="https://tools.ietf.org/html/rfc2616">RFC 2616</a>"</i></b> document
+ * 			will be defined here.
+ * 		</li>
+ * 		<li>
+ * 			The HttpStatusCodes class will contain these codes by default when generated into an object.
+ * 		</li>
+ * </ul>
  * </p>
  * <h2>1xx: Informational (<a href="https://tools.ietf.org/html/rfc2616#section-10.1">LINK</a>)</h2>
  * <p>
