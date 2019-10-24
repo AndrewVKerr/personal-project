@@ -2,20 +2,14 @@ package net.mcorp.server.protocols.websocket;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.util.Base64;
-import java.util.HashMap;
-
-import net.mcorp.server.packets.WebSocketPacket;
 import net.mcorp.server.protocols.Packet;
-import net.mcorp.server.protocols.Protocol;
-import net.mcorp.server.protocols.http.Http;
-import net.mcorp.server.protocols.http.HttpPacket;
-import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload;
 
 public class WebsocketConnection extends Packet {
 	
+	protected WebsocketConnection() {
+		super(null);
+	}
+
 	public WebsocketFrame getNextFrame() throws IOException {
 		InputStream in = this.ticket().socket.getInputStream();
 		System.out.println("Reading next frame!");

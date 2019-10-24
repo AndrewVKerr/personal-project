@@ -314,4 +314,6 @@ public class HttpPacket extends AsymmetricalPacket{
 		}
 	}
 
+	protected HttpPacket() { super(null); };
+	
 }

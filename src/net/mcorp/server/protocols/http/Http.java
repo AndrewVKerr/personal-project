@@ -7,6 +7,7 @@ import net.mcorp.server.protocols.Protocol;
 public final class Http extends Protocol<HttpPacket>{
 
 	public static final Http protocol = new Http();
+	public static final HttpHandler handler = new HttpHandler();
 	
 	/*
 	 * This is here mainly to prevent the instantiation of this class outside of the class.

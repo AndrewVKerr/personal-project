@@ -1,5 +1,7 @@
 package net.mcorp.server.protocols;
 
+import java.io.IOException;
+
 import net.mcorp.server.Ticket;
 import net.mcorp.utils.lockable.LockableObject;
 
@@ -16,7 +18,8 @@ public abstract class Protocol<P extends Packet> extends LockableObject{
 	/**
 	 * This method will generate a {@linkplain Packet} that matches the protocol's name.
 	 * @param ticket - {@linkplain Ticket} - The ticket object that is being used to generate the packet.
+	 * @throws IOException 
 	 */
-	public abstract P generateNewPacketObject(Ticket ticket);
+	public abstract P generateNewPacketObject(Ticket ticket) throws IOException;
 	
 }

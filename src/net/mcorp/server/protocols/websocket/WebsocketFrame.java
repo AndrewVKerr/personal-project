@@ -3,12 +3,7 @@ package net.mcorp.server.protocols.websocket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.math.BigInteger;
-import java.nio.ByteBuffer;
-
 import net.mcorp.server.Ticket;
-import net.mcorp.server.packets.WebSocketPacket;
-import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
 
 /**

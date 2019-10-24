@@ -4,6 +4,10 @@ import net.mcorp.utils.exceptions.LockedValueException;
 
 public abstract class AsymmetricalPacket extends Packet {
 
+	protected AsymmetricalPacket(Packet dummy) {
+		super(dummy);
+	}
+
 	/**
 	 * The Mode that the server should communicate as.<hr>
 	 * <h2>Different Modes</h2>

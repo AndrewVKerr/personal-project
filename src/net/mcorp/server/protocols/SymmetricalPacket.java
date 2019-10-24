@@ -2,6 +2,10 @@ package net.mcorp.server.protocols;
 
 public abstract class SymmetricalPacket extends Packet{
 	
+	protected SymmetricalPacket(Packet dummy) {
+		super(dummy);
+	}
+
 	/**
 	 * This method will check to make sure that there is a valid ticket assigned to this object,
 	 * and that the Packet.isLocked() method returns false before calling another method

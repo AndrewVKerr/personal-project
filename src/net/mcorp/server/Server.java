@@ -7,11 +7,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.imageio.ImageIO;
-
 import net.mcorp.utils.Debugger;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
+import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.resources.ResourceTree;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
 import net.mcorp.server.resources.transferable.WebMedia;
@@ -70,7 +69,7 @@ public class Server implements Runnable{
 		while(this.server != null && this.server.isClosed() == false) {
 			try {
 				Socket socket = server.accept();
-				pool.execute(new Ticket(socket,this));
+				pool.execute(Http.handler.generateThread(new Ticket(socket,this)));
 			}catch(Exception e) {
 				Debugger.printException(Debugger.DebugLevel.Warn,e);
 			}

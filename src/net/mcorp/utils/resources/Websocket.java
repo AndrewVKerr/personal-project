@@ -1,16 +1,5 @@
 package net.mcorp.utils.resources;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.security.MessageDigest;
-import java.util.Base64;
-
-import net.mcorp.server.Packet;
-import net.mcorp.server.Ticket;
-import net.mcorp.server.packets.HttpPacket;
-import net.mcorp.server.packets.WebSocketPacket;
-import net.mcorp.server.packets.WebSocketPacket.WebSocketFrame;
-
 public class Websocket {}/*extends Resource{
 	
 	private WebsocketHandler handler = null;

@@ -69,4 +69,6 @@ public abstract class Packet extends LockableObject{
 	 */
 	public final synchronized boolean isLocked(String location) throws LockedValueException { return super.isLocked(location); };
 	
+	
+	protected Packet(Packet dummy) {};
 }

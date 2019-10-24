@@ -3,7 +3,6 @@ package net.mcorp.server.resources;
 import java.util.ArrayList;
 
 import net.mcorp.server.resources.transferable.TransferableObject;
-import net.mcorp.server.resources.transferable.Webpage;
 import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
 

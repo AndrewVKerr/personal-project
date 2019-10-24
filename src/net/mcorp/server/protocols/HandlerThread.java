@@ -19,8 +19,7 @@ public abstract class HandlerThread<P extends Protocol<?>, T extends Packet> imp
 	@Override
 	@SuppressWarnings("unchecked")
 	public final void run() {
-		ticket.protocol();
-		ticket.autoClose(true);
+		ticket.protocol(protocol);
 		try {
 			execute((T) ticket.getPacket(protocol));
 		} catch (IOException e) {
@@ -30,6 +29,15 @@ public abstract class HandlerThread<P extends Protocol<?>, T extends Packet> imp
 				ticket.close();
 			} catch (IOException e1) {
 				e1.printStackTrace();
+			}
+		} catch (RuntimeException re) {
+			re.printStackTrace();
+		}
+		if(ticket.autoClose()) {
+			try {
+				ticket.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
