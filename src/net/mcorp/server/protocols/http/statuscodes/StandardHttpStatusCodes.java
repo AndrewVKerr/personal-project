@@ -49,7 +49,8 @@ package net.mcorp.server.protocols.http.statuscodes;
  * 			will be defined here.
  * 		</li>
  * 		<li>
- * 			The HttpStatusCodes class will contain these codes by default when generated into an object.
+ * 			These codes are used by every application as generic codes because of this these codes
+ * 			will always be added into a HttpStatusCodes object upon creation.
  * 		</li>
  * </ul>
  * </p>

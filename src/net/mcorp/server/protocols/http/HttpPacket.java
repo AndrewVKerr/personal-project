@@ -202,7 +202,7 @@ public class HttpPacket extends AsymmetricalPacket{
 		 */
 		long timeout = System.currentTimeMillis();
 		while(!br.ready()) {
-			//Timeout if client takes more than 500 milliseconds to respond.
+			//Timeout if client takes more than X milliseconds to respond.
 			if(System.currentTimeMillis()-timeout >= MAX_TIMEOUT) {
 				//Timeout, client is late to party and server isnt waiting for anyone.
 				throw new TimedOutException("Socket failed to send data in time!");
@@ -214,7 +214,7 @@ public class HttpPacket extends AsymmetricalPacket{
 		 *    0) Method/Url/Version
 		 *    1) Headers
 		 *    2) Payload (if method indicates a payload.)
-		 *    *) Bread if anything else
+		 *    *) Break if anything else
 		 */
 		int stage = 0;
 		
