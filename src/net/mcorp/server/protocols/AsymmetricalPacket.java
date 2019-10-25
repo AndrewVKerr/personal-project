@@ -42,7 +42,7 @@ public abstract class AsymmetricalPacket extends Packet {
 	 * 	   <td><span style="color:rgb(0,255,0)">&#10003;</span></td>
 	 * 	 </tr>
 	 * </table>
-	 * @author ThePuppet
+	 * @author Andrew Kerr
 	 */
 	public static enum ConnectionMode{
 		/**

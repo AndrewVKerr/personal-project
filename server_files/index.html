@@ -20,7 +20,7 @@
                     send();
                 }
             }
-            var w = new WebSocket("ws://127.0.0.1:2000/Websocket");
+            var w = new WebSocket("ws://127.0.0.1:2000/index/Websocket");
             w.onmessage = function(e){
                 var elm = document.createElement("p")
                 elm.style.display = "block";

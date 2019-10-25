@@ -151,7 +151,7 @@ public final class WebsocketFrame{
 		
 		public void write(int store) {
 			index++;
-			System.out.print((char) store);
+			//System.out.print((char) store);
 			if(currItem == null) {
 				this.reset();
 			}
@@ -247,13 +247,13 @@ public final class WebsocketFrame{
 			this.payload().reset();
 		}else {
 			if(this.length().get7BitValue() == 126) {
-				System.out.println("16Bit Value: "+this.length().get16BitValue());
+				//System.out.println("16Bit Value: "+this.length().get16BitValue());
 				for(int i = 0; i < this.length().get16BitValue(); i++) {
 					out.write(pi.getStored());
 					pi = pi.getNext();
 				}
 				this.payload().reset();
-				System.out.println();
+				//System.out.println();
 			}else {
 				long i = 0;
 				while(0<Long.compareUnsigned(this.length().get64BitValue(), i)) {

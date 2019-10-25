@@ -9,15 +9,13 @@ import net.mcorp.utils.exceptions.TimedOutException;
 
 public class HttpThread extends HandlerThread<Http,HttpPacket>{
 
-	public HttpThread(Ticket ticket) {
+	protected HttpThread(Ticket ticket) {
 		super(Http.protocol, ticket);
 	}
 
 	@Override
 	public void execute(HttpPacket packet) {
 		try {
-			System.out.println(packet);
-			System.out.println(ticket());
 			ticket().autoClose(true);
 			packet.readFromTicket();
 			System.out.println(packet.Url());
@@ -53,6 +51,19 @@ public class HttpThread extends HandlerThread<Http,HttpPacket>{
 					response.lock();
 					response.writeToTicket();
 				}catch(Exception e1) {}
+			}else {
+				if(e instanceof HttpException) {
+					try {
+						HttpException he = (HttpException) e;
+						HttpPacket response = (HttpPacket) ticket().getPacket(Http.protocol);
+						response.Version("Http/1.1");
+						response.StatusCode(he.code());
+						response.setHeaderValue("type", "plain/text");
+						response.Payload(he.getMessage().getBytes());
+						response.lock();
+						response.writeToTicket();
+					}catch(Exception e1) {}
+				}
 			}
 			e.printStackTrace();
 		}

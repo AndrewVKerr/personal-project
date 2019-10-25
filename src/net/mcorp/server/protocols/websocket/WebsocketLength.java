@@ -16,7 +16,7 @@ public class WebsocketLength {
 	public long get64BitValue() { return this.value64Bit; };
 	
 	public void set7BitValue(long value) {
-		System.out.println("RAW LENGTH: "+Long.toUnsignedString(value));
+		//System.out.println("RAW LENGTH: "+Long.toUnsignedString(value));
 		if(0>Long.compareUnsigned(value, 125)) {
 			value7Bit = (byte) value;
 		}else {

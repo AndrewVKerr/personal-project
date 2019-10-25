@@ -7,6 +7,7 @@ import net.mcorp.server.protocols.Protocol;
 public final class Websocket extends Protocol<WebsocketConnection>{
 	
 	public static final Websocket protocol = new Websocket();
+	public static final WebsocketHandler handler = new WebsocketHandler();
 	
 	/*
 	 * This constructor is used to prevent this class from being created outside of its class.

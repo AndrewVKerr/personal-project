@@ -12,7 +12,7 @@ public class WebsocketConnection extends Packet {
 
 	public WebsocketFrame getNextFrame() throws IOException {
 		InputStream in = this.ticket().socket.getInputStream();
-		System.out.println("Reading next frame!");
+		//System.out.println("Reading next frame!");
 		String f = "";
 		WebsocketFrame frame = new WebsocketFrame();
 		String bite = this.getNextByte(in);//Frame 1 [Fin,Rsv1,Rsv2,Rsv3,Opcode(4)]
@@ -40,7 +40,7 @@ public class WebsocketConnection extends Packet {
 			}
 		}
 		int j = 0;
-		System.out.println("7Bit Value: "+frame.length().get7BitValue());	
+		//System.out.println("7Bit Value: "+frame.length().get7BitValue());	
 		if(frame.length().get7BitValue() < 125) {
 			for(byte b = 0; b < frame.length().get7BitValue(); b++) {
 				bite = this.getNextByte(in);f+=bite;
@@ -50,14 +50,14 @@ public class WebsocketConnection extends Packet {
 			frame.payload().reset();
 		}else {
 			if(frame.length().get7BitValue() == 126) {
-				System.out.println("16Bit Value: "+frame.length().get16BitValue());
+				//System.out.println("16Bit Value: "+frame.length().get16BitValue());
 				for(int i = 0; i < frame.length().get16BitValue(); i++) {
 					bite = this.getNextByte(in);f+=bite;
 					frame.payload().write((Integer.parseUnsignedInt(bite, 2) ^ frame.maskKeys()[j]));
 					j = (j+1) % 4;
 				}
 				frame.payload().reset();
-				System.out.println();
+				//System.out.println();
 			}else {
 				long i = 0;
 				while(0<Long.compareUnsigned(frame.length().get64BitValue(), i)) {
@@ -84,9 +84,9 @@ public class WebsocketConnection extends Packet {
 			l++;
 			j = (j+1) % 4;
 		}*/
-		System.out.println("DONE");
+		//System.out.println("DONE");
 		frame.lock();
-		System.out.println("Frame: "+f);
+		//System.out.println("Frame: "+f);
 		return frame;
 	}
 	
@@ -100,8 +100,9 @@ public class WebsocketConnection extends Packet {
 
 	public String getNextByte(InputStream in) throws IOException{
 		int i = in.read();
-		String b = Integer.toBinaryString(i);
-		return b;
+		//String b = Integer.toBinaryString(i);
+		return String.format("%8s", Integer.toBinaryString(i)).replace(' ', '0');
+		//return b;
 	}
 	
 	public WebsocketFrame createResponse() {

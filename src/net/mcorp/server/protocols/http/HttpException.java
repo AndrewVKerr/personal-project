@@ -13,6 +13,8 @@ public class HttpException extends Exception {
 	private Exception originalException = null;
 	private String reason = null;
 	private HttpStatusCode code = StandardHttpStatusCodes.Internal_Server_Error;
+	public HttpStatusCode code() { return this.code; };
+	public Exception origin() { return this.originalException; };
 	
 	public HttpException(String reason) {
 		this.reason = reason;
