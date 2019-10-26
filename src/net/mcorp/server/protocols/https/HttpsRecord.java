@@ -1,6 +1,7 @@
 package net.mcorp.server.protocols.https;
 
 import net.mcorp.server.protocols.https.records.RecordType;
+import net.mcorp.server.protocols.https.records.handshake.HandshakeType;
 import net.mcorp.utils.BinaryUtilitys;
 
 public class HttpsRecord implements BinaryUtilitys{

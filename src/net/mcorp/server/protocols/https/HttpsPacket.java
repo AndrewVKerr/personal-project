@@ -38,6 +38,8 @@ public class HttpsPacket extends AsymmetricalPacket implements BinaryUtilitys{
 				HandshakeStub hstub = Handshake.record.createNewStub(record);
 				stub = hstub;
 				hstub.read(in);
+				
+				
 			}
 		}else {
 			System.err.println("Client connection not supported! Https");
