@@ -2,7 +2,7 @@ package net.mcorp.server.protocols.https.records;
 
 import java.util.ArrayList;
 
-import net.mcorp.server.protocols.https.records.handshake.Handshake;
+import net.mcorp.server.protocols.https.records.handshakeOLD.Handshake;
 
 public final class RecordTypes {
 	

@@ -1,27 +1,34 @@
 package net.mcorp.server.protocols.https;
 
 import net.mcorp.server.protocols.https.records.RecordType;
-import net.mcorp.server.protocols.https.records.handshake.HandshakeType;
+import net.mcorp.server.protocols.https.records.RecordTypeStub;
 import net.mcorp.utils.BinaryUtilitys;
 
 public class HttpsRecord implements BinaryUtilitys{
 	
 	private RecordType<?> type = null;
 	public RecordType<?> type() { return this.type; };
-	protected void type(RecordType<?> i) { this.type = i; }
 	
-	private int version = 0;
+	private RecordTypeStub<?> stub = null;
+	public RecordTypeStub<?> stub(){ return this.stub; };
+	
+	private int version = -1;
 	public int version() { return this.version; };
-	protected void version(int i) { this.version = i; }
+	public void version(int i) { if(this.version == -1) this.version = i; }
 	
-	private int length = 0;
+	private int length = -1;
 	public int length() { return this.length; };
-	protected void length(int i) { this.length = i; }
+	public void calcLength() { this.length = 5+(stub == null ? 0 : stub.length()); };
 	
 	public HttpsRecord(RecordType<?> type, int version, int length) {
 		this.type = type;
 		this.version = version;
 		this.length = length;
+	}
+	
+	public HttpsRecord(RecordTypeStub<?> stub) {
+		this.type = stub.record();
+		this.stub = stub;
 	}
 	
 	public String toString() {

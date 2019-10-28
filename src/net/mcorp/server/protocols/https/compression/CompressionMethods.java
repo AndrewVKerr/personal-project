@@ -4,9 +4,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import net.mcorp.server.protocols.https.ciphers.GreaseCipher;
+import net.mcorp.server.protocols.https.ciphers.TLS_RSA_WITH_NULL_NULL;
 import net.mcorp.utils.BinaryUtilitys;
 
 public final class CompressionMethods implements BinaryUtilitys{
+	
+	private static boolean loadedGlobals = false;
+	
+	private void loadGlobal() {
+		if(loadedGlobals)
+			return;
+		addGlobalMethod(NO_COMPRESSION.instance);
+		loadedGlobals = true;
+	}
+	
+	public CompressionMethods() {
+		this.loadGlobal();
+	}
 	
 	public static abstract class CompressionMethod{
 		

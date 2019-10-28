@@ -1,10 +1,10 @@
-package net.mcorp.server.protocols.https.records.handshake.types;
+package net.mcorp.server.protocols.https.records.handshakeOLD.types;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.mcorp.server.protocols.https.records.handshake.*;
+import net.mcorp.server.protocols.https.records.handshakeOLD.*;
 
 public class HelloRequest extends HandshakeType {
 
@@ -25,6 +25,12 @@ public class HelloRequest extends HandshakeType {
 	@Override
 	protected void writeRoutine(OutputStream out) throws IOException {
 		throw new IOException("Hello Request not setup yet...");
+	}
+
+	@Override
+	public void calcLength() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

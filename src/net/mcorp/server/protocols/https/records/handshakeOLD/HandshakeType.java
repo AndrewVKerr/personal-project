@@ -1,4 +1,4 @@
-package net.mcorp.server.protocols.https.records.handshake;
+package net.mcorp.server.protocols.https.records.handshakeOLD;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +13,10 @@ public abstract class HandshakeType implements BinaryUtilitys{
 	
 	private final HandshakeStub stub;
 	public final HandshakeStub stub() { return this.stub; };
+	
+	protected int length;
+	public final int length() { return (this.stub() != null ? this.stub().length() : this.length); };
+	public abstract void calcLength();
 	
 	public HandshakeType(int type, HandshakeStub stub) {
 		this.type = type;

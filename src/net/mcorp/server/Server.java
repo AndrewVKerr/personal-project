@@ -20,6 +20,7 @@ import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload;
 import net.mcorp.server.protocols.websocket.WebsocketFrame.Payload.PayloadItem;
 import net.mcorp.server.resources.ResourceTree;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
+import net.mcorp.server.resources.transferable.HttpsResource;
 import net.mcorp.server.resources.transferable.WebMedia;
 import net.mcorp.server.resources.transferable.WebOverview;
 import net.mcorp.server.resources.transferable.WebRedirect;
@@ -76,6 +77,7 @@ public class Server implements Runnable{
 				}
 				
 			});
+			index.createChild("https", new HttpsResource());
 			image.update(new File(filesDir.getAbsolutePath()+"/image.jpg")); // https://www.pexels.com/photo/mountain-with-fog-2539409/
 			video.update(new File(filesDir.getAbsolutePath()+"/video.mp4"));
 			audio.update(new File(filesDir.getAbsolutePath()+"/faded.mp3"));
@@ -136,7 +138,7 @@ public class Server implements Runnable{
 		while(this.server != null && this.server.isClosed() == false) {
 			try {
 				Socket socket = server.accept();
-				pool.execute(Https.handler.generateThread(new Ticket(socket,this)));
+				pool.execute(Http.handler.generateThread(new Ticket(socket,this)));
 			}catch(Exception e) {
 			}
 		}

@@ -74,7 +74,12 @@ public final class CipherSuites implements BinaryUtilitys{
 		return null;
 	}
 	
+	private ArrayList<Integer> cipherIds = new ArrayList<Integer>();
 	private ArrayList<CipherSuite> ciphers = new ArrayList<CipherSuite>();
+	
+	public Integer[] cipherIds() {
+		return cipherIds.toArray(new Integer[0]);
+	}
 	
 	public CipherSuite getCipher(int id) {
 		for(CipherSuite cipher : ciphers) {
@@ -108,6 +113,7 @@ public final class CipherSuites implements BinaryUtilitys{
 		for(int i = 0; i < this.givenLength; i++) {
 			int id = Integer.parseInt(this.getNextNBytes(in,2),2);
 			CipherSuite cipher = getGlobalCipher(id);
+			this.cipherIds.add(id);
 			if(cipher != null) {
 				this.ciphers.add(cipher);
 			}else{

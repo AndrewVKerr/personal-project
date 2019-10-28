@@ -35,6 +35,8 @@ public abstract class RecordType<S extends RecordTypeStub<?>> implements BinaryU
 	
 	public abstract S createNewStub(HttpsRecord record);
 	
+	public abstract S createNewStub();
+	
 	
 	public final S castStub(Class<S> castingClass, RecordTypeStub<?> stub) {
 		try {

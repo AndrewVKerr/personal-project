@@ -1,10 +1,10 @@
-package net.mcorp.server.protocols.https.records.handshake;
+package net.mcorp.server.protocols.https.records.handshakeOLD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import net.mcorp.server.protocols.https.records.handshake.types.ClientHello;
-import net.mcorp.server.protocols.https.records.handshake.types.HelloRequest;
+import net.mcorp.server.protocols.https.records.handshakeOLD.types.ClientHello;
+import net.mcorp.server.protocols.https.records.handshakeOLD.types.HelloRequest;
 
 public class HandshakeTypes {
 	

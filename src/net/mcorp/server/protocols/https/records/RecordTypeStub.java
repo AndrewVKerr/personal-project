@@ -8,6 +8,13 @@ public abstract class RecordTypeStub<R extends RecordType<?>> implements BinaryU
 	private final R record;
 	public R record() { return this.record; };
 	
+	protected int type = -1;
+	public final int type() { return this.type; };
+	
+	protected int length = -1;
+	public final int length() { return this.length; };
+	public abstract void calcLength();
+	
 	private final HttpsRecord https;
 	public HttpsRecord httpsRecord() { return this.https; };
 	

@@ -4,59 +4,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.mcorp.server.protocols.https.SessionID;
-import net.mcorp.server.protocols.https.ciphers.CipherSuites;
-import net.mcorp.server.protocols.https.compression.CompressionMethods;
-import net.mcorp.server.protocols.https.extensions.Extensions;
-import net.mcorp.server.protocols.https.records.handshake.*;
-
-public class ClientHello extends HandshakeType {
-
-	public ClientHello(HandshakeStub stub) {
-		super(1, stub);
+public class ClientHello extends HandshakeType{
+	
+	private int sslVersion;
+	public int sslVersion() { return this.sslVersion; };
+	
+	private int sessionIDLength;
+	public int sessionIDLength() { return this.sessionIDLength; }
+	
+	private String sessionID;
+	public String sessionID() { return this.sessionID; };
+	
+	private int cipher = -1;
+	public int cipher() {
+		return cipher;
 	}
-
-	private int version;
-	public final int version() { return this.version; };
 	
-	private int sessionLen;
-	public final int sessionLength() { return this.sessionLen; };
-	
-	private SessionID sessionId;
-	public final SessionID sessionId() { return this.sessionId; };
-	
-	private CipherSuites ciphers;
-	public final CipherSuites ciphers() { return this.ciphers; };
-	
-	private CompressionMethods compressionMethods;
-	public final CompressionMethods compressionMethods() { return this.compressionMethods; };
-	
-	private Extensions extensions;
-	public final Extensions extensions() { return this.extensions; };
+	public int length() {
+		return 3+32+1+this.sessionIDLength();
+	}
 	
 	@Override
 	protected void readRoutine(InputStream in) throws IOException {
+		this.sslVersion = Integer.parseInt(getNextNBytes(in,2),2);
 		
-		this.version = Integer.parseInt(this.getNextNBytes(in,2),2);
+		getNextNBytes(in,32);
 		
-		//Read in the next 32 bits (4 bytes) and ignore them!
-		this.getNextNBytes(in, 32);
+		this.sessionIDLength = Integer.parseInt(getNextNBytes(in,1), 2);
 		
-		this.sessionLen = Integer.parseInt(this.getNextByte(in),2);
-		System.out.println("Length: "+this.sessionLen);
-		this.sessionId = new SessionID(this.getNextNBytes(in,32));
+		this.sessionID = "";
+		for(int i = 0; i < this.sessionIDLength; i++) {
+			int val = in.read();
+			this.sessionID += this.toHexString(val, false);
+		}
 		
-		this.ciphers = new CipherSuites();
-		this.ciphers.read(in);
+		int cipher = Integer.parseInt(getNextNBytes(in,2), 2);
+		for(int i = 0; i < cipher; i++) {
+			if(this.cipher == -1)
+				this.cipher = cipher;
+			System.out.println("["+(i+1)+"/"+cipher+"]Cipher: "+toHexString(Integer.parseInt(getNextNBytes(in,2), 2)));
+		}
 		
-		this.compressionMethods = new CompressionMethods();
-		this.compressionMethods.read(in);
+		int compression = Integer.parseInt(getNextNBytes(in,1), 2);
+		for(int i = 0; i < compression; i++) {
+			System.out.println("["+(i+1)+"/"+compression+"]Compression: "+toHexString(Integer.parseInt(getNextNBytes(in,1), 2)));
+		}
 		
-		this.extensions = new Extensions();
-		this.extensions.read(in);
-		
-		//FIXME: Add more data
-		
+		int extensions = Integer.parseInt(getNextNBytes(in,2), 2);
+		for(int i = 0; i < extensions; i++) {
+			System.out.println("["+(i+1)+"/"+extensions+"]Extensions: "+toHexString(Integer.parseInt(getNextNBytes(in,2), 2)));
+		}
 	}
 	
 	@Override
@@ -68,14 +65,17 @@ public class ClientHello extends HandshakeType {
 	@Override
 	public String toString(String indent, String indentBy) {
 		String str = this.getClass().getSimpleName()+"[";
-		str += "\n"+indent+indentBy+"version = Integer["+toHexString(this.version)+"],";
-		str += "\n"+indent+indentBy+"sessionLength = Integer["+this.sessionLen+"],";
-		str += "\n"+indent+indentBy+"sessionId = "+(this.sessionId != null ? this.sessionId.toString(indent+indentBy, indentBy) : null)+",";
-		str += "\n"+indent+indentBy+"ciphers = "+(this.ciphers != null ? this.ciphers.toString(indent+indentBy, indentBy) : null)+",";
-		str += "\n"+indent+indentBy+"compressionMethods = "+(this.compressionMethods != null ? this.compressionMethods.toString(indent+indentBy, indentBy) : null)+",";
-		str += "\n"+indent+indentBy+"extensions = "+(this.extensions != null ? this.extensions.toString(indent+indentBy, indentBy) : null)+"";
+		str += "\n"+indent+indentBy+"length = Integer["+this.length()+"],";
+		str += "\n"+indent+indentBy+"sslVersion = Integer["+this.sslVersion+"],";
+		str += "\n"+indent+indentBy+"sessionIDLength = Integer["+this.sessionIDLength()+"],";
+		str += "\n"+indent+indentBy+"sessionID = String[\"0x"+this.sessionID+"\"]";
 		str += "\n"+indent+"]";
 		return str;
 	}
 
+	@Override
+	public int type() {
+		return 1;
+	};
+	
 }

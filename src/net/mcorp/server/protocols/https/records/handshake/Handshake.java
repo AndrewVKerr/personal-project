@@ -1,19 +1,24 @@
 package net.mcorp.server.protocols.https.records.handshake;
 
-import net.mcorp.server.protocols.https.HttpsRecord;
-import net.mcorp.server.protocols.https.records.RecordType;
+import net.mcorp.server.protocols.https.records.RecordStubConstructor;
 
-public class Handshake extends RecordType<HandshakeStub> {
+public class Handshake extends RecordStubConstructor<HandshakeStub> {
 
-	public static final Handshake record = new Handshake();
+	public static final Handshake instance = new Handshake();
 	
-	private Handshake() {
-		super(22);
+	private Handshake() {};
+	
+	@Override
+	public HandshakeStub createResponseStub() {
+		HandshakeStub stub = new HandshakeStub();
+		stub.writeOnly();
+		return stub;
 	}
 
 	@Override
-	public HandshakeStub createNewStub(HttpsRecord record) {
-		return new HandshakeStub(this,record);
+	public HandshakeStub createListenerStub() {
+		HandshakeStub stub = new HandshakeStub();
+		return stub;
 	}
-	
+
 }
