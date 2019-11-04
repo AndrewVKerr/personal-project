@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import net.mcorp.utils.BinaryUtils;
+import net.mcorp.network.common.utils.BinaryUtils;
+import net.mcorp.network.common.utils.NetworkingUtils;
 
-public abstract class HandshakeType extends BinaryUtils{
+public abstract class HandshakeType extends NetworkingUtils{
 	
 	public abstract int type();
 	

@@ -2,11 +2,13 @@ package net.mcorp.server.protocols.https.records;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import net.mcorp.network.common.utils.BinaryUtils;
+import net.mcorp.network.common.utils.NetworkingUtils;
+
 import java.io.IOException;
 
-import net.mcorp.utils.BinaryUtils;
-
-public abstract class RecordStub extends BinaryUtils {
+public abstract class RecordStub extends NetworkingUtils {
 
 	/**
 	 * The length of the packet as it currently stands in number of binary bytes.<hr>

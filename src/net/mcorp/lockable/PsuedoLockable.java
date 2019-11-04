@@ -3,11 +3,12 @@ package net.mcorp.lockable;
 public abstract class PsuedoLockable {
 	
 	/**
-	 * This exception is thrown under three different circumstances:
+	 * This exception is thrown under four different circumstances:
 	 * <ul>
 	 * 	<li>A attempt was made to <b>write</b> to a locked variable.</li>
 	 * 	<li>A attempt was made to <b>read</b> from a locked variable.</li>
 	 * 	<li>A attempt was made to <b>generate</b> a new {@linkplain LockController} object when one already existed.</li>
+	 * 	<li>A attempt was made to <b>set</b> a read only object.(Object doesn't support setting more than once.)</li>
 	 * </ul>
 	 * @author Andrew Kerr
 	 */

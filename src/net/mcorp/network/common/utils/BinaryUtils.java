@@ -1,40 +1,12 @@
-package net.mcorp.utils;
+package net.mcorp.network.common.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.SocketException;
+import net.mcorp.network.common.utils.debug.SmartDebug;
 
 /**
  * BinaryUtils is a class that provides some simple and repetitive functions that allow for the transferring of binary strings into numbers and vis versa.
  * @author Andrew Kerr
  */
 public abstract class BinaryUtils extends SmartDebug{
-	
-	/**
-	 * Retrieves the next (n) bytes from the provided InputStream (in).
-	 * @param in - {@linkplain InputStream} - The stream to listen to.
-	 * @param n - {@linkplain Integer} - How many bytes to return.
-	 * @return {@linkplain String} - A BinaryString
-	 * @throws IOException Thrown if the {@linkplain InputStream} encounters an exception.
-	 */
-	protected String getNextNBytes(InputStream in, int n) throws IOException {
-		String temp = "";
-		for(int i = 0; i < n; i++) {
-			temp += getNextByte(in);
-		}
-		return temp;
-	}
-
-	/**
-	 * Retrieves the next byte from the provided InputStream (in).
-	 * @param in - {@linkplain InputStream} - The stream to listen to.
-	 * @return {@linkplain String} - A BinaryString
-	 * @throws IOException Thrown if the {@linkplain InputStream} encounters an exception.
-	 */
-	protected String getNextByte(InputStream in) throws IOException{
-		return String.format("%8s", Integer.toBinaryString(in.read())).replace(' ', '0');
-	}
 	
 	/**
 	 * Turns the provided Integer(i) into a readable hex string. Example: i = 7, returns "0x07"
@@ -105,21 +77,6 @@ public abstract class BinaryUtils extends SmartDebug{
 	 */
 	protected String toBinStr(long bite, int len) {
 		return String.format("%"+len+"s",Long.toBinaryString(bite)).replace(' ', '0');
-	}
-	
-	protected void write(OutputStream out, String binaryString) throws IOException{
-		try {
-			for(int i = 0; i < binaryString.length()/8; i++) {
-				out.write(Integer.parseUnsignedInt(binaryString.substring(i*8,i*8+8), 2));
-			}
-		}catch(Exception e) {
-			if(e instanceof SocketException && e.getLocalizedMessage().contains("Broken pipe")) {
-				IOException ioe = new IOException("[BinaryUtils.write(OutputStream,String):FORCED_CLOSED] Client forced connection closed!");
-				ioe.addSuppressed(e);
-				throw ioe;
-			}
-			throw e;
-		}
 	}
 	
 }

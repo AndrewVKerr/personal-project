@@ -28,6 +28,8 @@ public class TestingWidget extends ServerWidget {
 	@Override
 	public void onKeyPressed(KeyEvent event) {
 		if(event.getKeyChar() == (char)KeyEvent.VK_BACK_SPACE) {
+			if(str.length() <= 0)
+				return;
 			str = new String(str.substring(0, str.length()-1));
 		}else {
 			str += event.getKeyChar();

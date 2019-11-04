@@ -3,9 +3,10 @@ package net.mcorp.server.protocols.https.records;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import net.mcorp.utils.BinaryUtils;
+import net.mcorp.network.common.utils.BinaryUtils;
+import net.mcorp.network.common.utils.NetworkingUtils;
 
-public final class Record extends BinaryUtils{
+public final class Record extends NetworkingUtils{
 	
 	private RecordStub stub;
 	public RecordStub stub() { return this.stub; };

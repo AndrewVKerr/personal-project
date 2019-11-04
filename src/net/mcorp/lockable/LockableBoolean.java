@@ -13,14 +13,12 @@ public class LockableBoolean extends LockableVariable<Boolean>{
 
 	@Override
 	protected Boolean getCall() {
-		// TODO Auto-generated method stub
-		return null;
+		return bool;
 	}
 
 	@Override
 	protected void setCall(Boolean object) {
-		// TODO Auto-generated method stub
-		
+		this.bool = object;
 	}
 
 }
