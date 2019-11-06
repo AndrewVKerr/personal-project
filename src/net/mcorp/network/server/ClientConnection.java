@@ -9,7 +9,5 @@ public final class ClientConnection extends Connection{
 	public ClientConnection(Socket socket) {
 		super(socket);
 	}
-
-	
 	
 }

@@ -25,7 +25,10 @@ public class ServerRunnable<ConnectionHandler_ extends ConnectionHandler> implem
 			while(server.isRunning()) {
 				try {
 					Socket sock = this.socket.accept();
-					handler.handleAccept(sock);
+					if(handler != null)
+						handler.handleAccept(sock);
+					else
+						System.out.println("+---=[ Warning ]=---+\nThis server has no handler to handle sockets.");
 				}catch(SocketTimeoutException ste) {}
 			}
 		}catch(Exception e) {

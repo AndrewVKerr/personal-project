@@ -1,29 +1,25 @@
 package net.mcorp.network.common.protocols;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.exceptions.ConnectionException;
-import net.mcorp.network.common.utils.NetworkingUtils;
 
-public abstract class WritePacket<Protocol_ extends Protocol<Protocol_, ?, ?>> extends NetworkingUtils{
-
-	private Connection connection;
-	private Protocol_ protocol;
+/**
+ * A abstract class used to define a write only {@linkplain Packet}.
+ * @author Andrew Kerr
+ * @param <Protocol_> - {@linkplain Protocol} - The protocol class that was used to generate this packet.
+ */
+public abstract class WritePacket<Protocol_ extends Protocol<Protocol_, ?, ?>> extends Packet<Protocol_>{
 	
 	public WritePacket(Connection connection, Protocol_ protocol) {
-		this.connection = connection;
-		this.protocol = protocol;
+		super(connection,protocol);
 	}
 	
-	public abstract void writeCall(InputStream in);
+	protected abstract void writeCall(OutputStream in);
 	
 	public final void write() throws ConnectionException {
-		this.writeCall(connection.getInputStream());
-	}
-	
-	public Protocol_ protocol() {
-		return this.protocol;
+		this.writeCall(connection.getOutputStream());
 	}
 	
 }

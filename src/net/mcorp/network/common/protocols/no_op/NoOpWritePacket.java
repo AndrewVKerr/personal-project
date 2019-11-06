@@ -1,6 +1,6 @@
 package net.mcorp.network.common.protocols.no_op;
 
-import java.io.InputStream;
+import java.io.OutputStream;
 
 import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.protocols.Protocol;
@@ -18,7 +18,7 @@ public class NoOpWritePacket<Protocol_ extends Protocol<Protocol_,?,NoOpWritePac
 	}
 
 	@Override
-	public void writeCall(InputStream in) {
+	public void writeCall(OutputStream in) {
 		return;
 	}
 

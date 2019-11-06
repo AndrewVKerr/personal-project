@@ -32,6 +32,16 @@ public abstract class NetworkingUtils extends BinaryUtils{
 		return String.format("%8s", Integer.toBinaryString(in.read())).replace(' ', '0');
 	}
 	
+	protected String readUntil(InputStream in, char stop) throws IOException {
+		String str = "";
+		char c = (char)in.read();
+		while(c != '\n') {
+			str += c;
+			c = (char)in.read();
+		}
+		return str;
+	}
+	
 	protected void write(OutputStream out, String binaryString) throws IOException{
 		try {
 			for(int i = 0; i < binaryString.length()/8; i++) {

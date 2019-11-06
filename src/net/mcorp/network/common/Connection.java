@@ -40,4 +40,8 @@ public abstract class Connection {
 		}
 	}
 	
+	public void close() throws IOException {
+		this.socket.close();
+	}
+	
 }
