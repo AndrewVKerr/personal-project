@@ -23,7 +23,6 @@ public class HttpConnectionHandler extends ConnectionHandler{
 		} catch (ConnectionException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
