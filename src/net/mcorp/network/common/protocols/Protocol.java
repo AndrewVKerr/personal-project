@@ -1,7 +1,5 @@
 package net.mcorp.network.common.protocols;
 
-import net.mcorp.network.common.Connection;
-
 /**
  * This abstract class is used as a template to create a object that is responsible
  * for creating {@linkplain ReadPacket}'s and {@linkplain WritePacket}'s.
@@ -11,9 +9,8 @@ import net.mcorp.network.common.Connection;
  * @param <ReadPacket_> - {@linkplain ReadPacket} - The class of the reading packet.
  * @param <WritePacket_> - {@linkplain WritePacket} - The class of the writing packet.
  */
-public abstract class Protocol<Protocol_ extends Protocol<Protocol_,ReadPacket_,WritePacket_>, ReadPacket_ extends ReadPacket<Protocol_>, WritePacket_ extends WritePacket<Protocol_>> {
+public abstract class Protocol<Protocol_ extends Protocol<Protocol_,PacketConstructor_>, PacketConstructor_ extends PacketConstructor<PacketConstructor_,Protocol_>> {
 	
-	public abstract ReadPacket_ createNewReadPacket(Connection connection);
-	public abstract WritePacket_ createNewWritePacket(Connection connection);
+	public abstract PacketConstructor_ getConstructor(); 
 	
 }

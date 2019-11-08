@@ -2,8 +2,9 @@ package net.mcorp.network.common.protocols.http;
 
 import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.protocols.Protocol;
+import net.mcorp.network.common.protocols.TwoPacketConstructor;
 
-public class HttpProtocol extends Protocol<HttpProtocol, HttpRPacket<HttpProtocol>, HttpWPacket<HttpProtocol>> {
+public class HttpProtocol extends Protocol<HttpProtocol, TwoPacketConstructor<HttpProtocol,HttpRPacket<HttpProtocol>, HttpWPacket<HttpProtocol>>> {
 
 	public static final HttpProtocol instance = new HttpProtocol();
 	
@@ -20,13 +21,9 @@ public class HttpProtocol extends Protocol<HttpProtocol, HttpRPacket<HttpProtoco
 	private HttpProtocol() {}
 	
 	@Override
-	public HttpRPacket<HttpProtocol> createNewReadPacket(Connection connection) {
-		return new HttpRPacket<HttpProtocol>(connection,this,timeout);
-	}
-
-	@Override
-	public HttpWPacket<HttpProtocol> createNewWritePacket(Connection connection) {
-		return new HttpWPacket<HttpProtocol>(connection,this);
+	public TwoPacketConstructor<HttpProtocol, HttpRPacket<HttpProtocol>, HttpWPacket<HttpProtocol>> getConstructor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

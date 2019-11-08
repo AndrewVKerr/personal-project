@@ -14,7 +14,7 @@ public class HttpConnectionHandler extends ConnectionHandler{
 	@Override
 	public void handleAccept(Socket socket) {
 		ClientConnection client = new ClientConnection(socket);
-		HttpRPacket<HttpProtocol> packet = HttpProtocol.instance.createNewReadPacket(client);
+		HttpRPacket<HttpProtocol> packet = HttpProtocol.instance.getConstructor().createNewReadPacket(client);
 		try {
 			packet.read();
 			client.getOutputStream().write("Http/1.1 200 OK\n\nHello World!".getBytes());

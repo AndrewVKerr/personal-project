@@ -16,4 +16,8 @@ public class LockedValueException extends Exception {
 		super("[LOCKED] The value for the object \""+s+"\" has been set into a pseudo-locked state. This prevents the editing of the value without first unlocking it.");
 	}
 	
+	protected boolean test() {
+		return true;
+	}
+	
 }

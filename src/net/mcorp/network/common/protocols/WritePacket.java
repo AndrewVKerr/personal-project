@@ -10,7 +10,7 @@ import net.mcorp.network.common.exceptions.ConnectionException;
  * @author Andrew Kerr
  * @param <Protocol_> - {@linkplain Protocol} - The protocol class that was used to generate this packet.
  */
-public abstract class WritePacket<Protocol_ extends Protocol<Protocol_, ?, ?>> extends Packet<Protocol_>{
+public abstract class WritePacket<Protocol_ extends Protocol<Protocol_,?>> extends Packet<Protocol_>{
 	
 	public WritePacket(Connection connection, Protocol_ protocol) {
 		super(connection,protocol);

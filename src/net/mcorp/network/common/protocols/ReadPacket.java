@@ -13,7 +13,7 @@ import net.mcorp.network.common.utils.NetworkingUtils;
  * @author Andrew Kerr
  * @param <Protocol_> - {@linkplain Protocol} - The protocol class that was used to generate this packet.
  */
-public abstract class ReadPacket<Protocol_ extends Protocol<Protocol_,?,?>> extends Packet<Protocol_>{
+public abstract class ReadPacket<Protocol_ extends Protocol<Protocol_,?>> extends Packet<Protocol_>{
 	
 	public ReadPacket(Connection connection, Protocol_ protocol) {
 		super(connection, protocol);

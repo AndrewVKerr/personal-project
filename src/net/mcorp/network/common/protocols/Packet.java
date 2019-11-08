@@ -14,7 +14,7 @@ import net.mcorp.network.common.utils.NetworkingUtils;
  *
  * @param <Protocol_> - {@linkplain Protocol} - A protocol that this class object can reference as its creator.
  */
-public abstract class Packet<Protocol_ extends Protocol<Protocol_,?,?>> extends NetworkingUtils{
+public abstract class Packet<Protocol_ extends Protocol<Protocol_,?>> extends NetworkingUtils{
 	
 	/**
 	 * The Connection object this packet belongs to.

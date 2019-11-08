@@ -8,9 +8,11 @@ import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.protocols.Protocol;
 import net.mcorp.network.common.protocols.ReadPacket;
+import net.mcorp.network.common.protocols.TwoPacketConstructor;
+import net.mcorp.network.common.protocols.WritePacket;
 import net.mcorp.network.common.protocols.http.codes.ClientErrorStatusCodes;
 
-public class HttpRPacket<Protocol_ extends Protocol<Protocol_, HttpRPacket<Protocol_>, ?>> extends ReadPacket<Protocol_> {
+public class HttpRPacket<Protocol_ extends Protocol<Protocol_,?>> extends ReadPacket<Protocol_> {
 
 	private final long timeout;
 	
