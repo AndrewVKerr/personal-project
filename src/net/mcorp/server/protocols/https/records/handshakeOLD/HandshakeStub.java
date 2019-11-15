@@ -3,9 +3,9 @@ package net.mcorp.server.protocols.https.records.handshakeOLD;
 import java.io.IOException;
 import java.io.InputStream;
 
+import net.mcorp.network.common.utils.BinaryUtilitys;
 import net.mcorp.server.protocols.https.HttpsRecord;
 import net.mcorp.server.protocols.https.records.RecordTypeStub;
-import net.mcorp.utils.BinaryUtilitys;
 
 public class HandshakeStub extends RecordTypeStub<Handshake> {
 	

@@ -2,10 +2,10 @@ package net.mcorp.server.protocols.websocket;
 
 import java.net.SocketException;
 
+import net.mcorp.network.common.exceptions.ValueAlreadySetException;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.HandlerThread;
 import net.mcorp.server.resources.transferable.WebsocketPool;
-import net.mcorp.utils.exceptions.ValueAlreadySetException;
 
 public class WebsocketThread extends HandlerThread<Websocket, WebsocketConnection>{
 

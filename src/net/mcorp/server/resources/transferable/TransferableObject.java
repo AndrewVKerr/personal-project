@@ -1,8 +1,8 @@
 package net.mcorp.server.resources.transferable;
 
+import net.mcorp.network.common.exceptions.LockedValueException;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
-import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
 
 public abstract class TransferableObject extends LockableObject{

@@ -8,13 +8,13 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
+import net.mcorp.network.common.exceptions.LockedValueException;
+import net.mcorp.network.common.exceptions.UnsupportedProtocolException;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.http.HttpPacket;
 import net.mcorp.server.protocols.http.statuscodes.StandardHttpStatusCodes;
 import net.mcorp.server.resources.MIMEType;
-import net.mcorp.utils.exceptions.LockedValueException;
-import net.mcorp.utils.exceptions.UnsupportedProtocolException;
 
 public class WebMedia extends TransferableObject {
 

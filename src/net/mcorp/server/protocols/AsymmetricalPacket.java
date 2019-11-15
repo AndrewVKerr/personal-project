@@ -1,6 +1,6 @@
 package net.mcorp.server.protocols;
 
-import net.mcorp.utils.exceptions.LockedValueException;
+import net.mcorp.network.common.exceptions.LockedValueException;
 
 public abstract class AsymmetricalPacket extends Packet {
 

@@ -1,8 +1,8 @@
 package net.mcorp.server.protocols;
 
+import net.mcorp.network.common.exceptions.LockedValueException;
+import net.mcorp.network.common.exceptions.ValueAlreadySetException;
 import net.mcorp.server.Ticket;
-import net.mcorp.utils.exceptions.LockedValueException;
-import net.mcorp.utils.exceptions.ValueAlreadySetException;
 import net.mcorp.utils.lockable.LockableObject;
 
 /**

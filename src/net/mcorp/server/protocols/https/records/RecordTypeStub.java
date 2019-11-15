@@ -1,7 +1,7 @@
 package net.mcorp.server.protocols.https.records;
 
+import net.mcorp.network.common.utils.BinaryUtilitys;
 import net.mcorp.server.protocols.https.HttpsRecord;
-import net.mcorp.utils.BinaryUtilitys;
 
 public abstract class RecordTypeStub<R extends RecordType<?>> implements BinaryUtilitys{
 	

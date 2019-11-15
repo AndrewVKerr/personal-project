@@ -2,8 +2,8 @@ package net.mcorp.server.resources;
 
 import java.util.ArrayList;
 
+import net.mcorp.network.common.exceptions.LockedValueException;
 import net.mcorp.server.resources.transferable.TransferableObject;
-import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
 
 public final class ResourceTree extends LockableObject{

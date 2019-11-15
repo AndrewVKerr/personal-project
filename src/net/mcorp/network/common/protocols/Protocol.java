@@ -1,16 +1,37 @@
 package net.mcorp.network.common.protocols;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import net.mcorp.network.common.Connection;
+
 /**
- * This abstract class is used as a template to create a object that is responsible
- * for creating {@linkplain ReadPacket}'s and {@linkplain WritePacket}'s.
- * @apiNote It should be noted that each extending class should contain a private constructor and a static final instance object.
+ * <h1>Protocol</h1>
+ * <hr>
+ * <p>An abstract class used for generic argument purposes.</p>
  * @author Andrew Kerr
- * @param <Protocol_> - {@linkplain Protocol} - The class that is extending this abstract class. (Used to properly setup read and write packets.)
- * @param <ReadPacket_> - {@linkplain ReadPacket} - The class of the reading packet.
- * @param <WritePacket_> - {@linkplain WritePacket} - The class of the writing packet.
  */
-public abstract class Protocol<Protocol_ extends Protocol<Protocol_,PacketConstructor_>, PacketConstructor_ extends PacketConstructor<PacketConstructor_,Protocol_>> {
+public abstract class Protocol<ReadData_ extends PacketData, WriteData_ extends PacketData>{
 	
-	public abstract PacketConstructor_ getConstructor(); 
+	protected Protocol() {};
+	
+	protected abstract void writeCall(OutputStream out, WriteData_ data) throws Exception;
+	public void write(Connection connection, WriteData_ data) throws IOException {
+		try {
+			this.writeCall(connection.getOutputStream(),data);
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+	
+	protected abstract ReadData_ readCall(InputStream in) throws Exception;
+	public ReadData_ read(Connection connection) throws IOException {
+		try {
+			return this.readCall(connection.getInputStream());
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
 	
 }

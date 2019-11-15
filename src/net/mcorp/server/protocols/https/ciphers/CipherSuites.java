@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import net.mcorp.utils.BinaryUtilitys;
+import net.mcorp.network.common.utils.BinaryUtilitys;
 
 public final class CipherSuites implements BinaryUtilitys{
 	

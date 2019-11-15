@@ -1,6 +1,6 @@
 package net.mcorp.server.protocols.https;
 
-import net.mcorp.utils.BinaryUtilitys;
+import net.mcorp.network.common.utils.BinaryUtilitys;
 
 public final class SessionID implements BinaryUtilitys{
 

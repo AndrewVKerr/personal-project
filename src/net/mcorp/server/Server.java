@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 
 import javax.swing.JTextField;
 
-import net.mcorp.utils.exceptions.LockedValueException;
 import net.mcorp.utils.lockable.LockableObject;
+import net.mcorp.network.common.exceptions.LockedValueException;
 import net.mcorp.server.protocols.http.Http;
 import net.mcorp.server.protocols.https.Https;
 import net.mcorp.server.protocols.websocket.WebsocketFrame;

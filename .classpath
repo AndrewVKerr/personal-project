@@ -5,6 +5,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="net/mcorp/server/|net/mcorp/network/common/protocols/old/" kind="src" path="src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

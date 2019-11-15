@@ -37,6 +37,7 @@ public class ServerRunnable<ConnectionHandler_ extends ConnectionHandler> implem
 							 + "\t- Exception:\t"+e.getClass().getSimpleName()+"\n"
 							 + "\t- Reason:\t\""+e.getLocalizedMessage()+"\"\n"
 							 + "+--------------------------------=[Server CRASH]=-----------------------------------+\n");
+			e.printStackTrace();
 			server.stop();
 		}
 	}

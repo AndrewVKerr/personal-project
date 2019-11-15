@@ -6,11 +6,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 
+import net.mcorp.network.common.exceptions.LockedValueException;
+import net.mcorp.network.common.exceptions.TimedOutException;
 import net.mcorp.server.protocols.AsymmetricalPacket;
 import net.mcorp.server.protocols.http.statuscodes.HttpStatusCode;
 import net.mcorp.server.protocols.http.statuscodes.HttpStatusCodes;
-import net.mcorp.utils.exceptions.LockedValueException;
-import net.mcorp.utils.exceptions.TimedOutException;
 
 /**
  * 

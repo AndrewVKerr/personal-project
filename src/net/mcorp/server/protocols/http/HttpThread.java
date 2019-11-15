@@ -1,11 +1,11 @@
 package net.mcorp.server.protocols.http;
 
+import net.mcorp.network.common.exceptions.TimedOutException;
 import net.mcorp.server.Ticket;
 import net.mcorp.server.protocols.HandlerThread;
 import net.mcorp.server.protocols.http.statuscodes.StandardHttpStatusCodes;
 import net.mcorp.server.resources.ResourceTree.ResourceUrl;
 import net.mcorp.server.resources.transferable.TransferableObject;
-import net.mcorp.utils.exceptions.TimedOutException;
 
 public class HttpThread extends HandlerThread<Http,HttpPacket>{
 

@@ -2,6 +2,7 @@ package net.mcorp.server.protocols.https;
 
 import java.io.InputStream;
 
+import net.mcorp.network.common.utils.BinaryUtilitys;
 import net.mcorp.server.protocols.AsymmetricalPacket;
 import net.mcorp.server.protocols.https.records.Record;
 import net.mcorp.server.protocols.https.records.RecordStub;
@@ -11,7 +12,6 @@ import net.mcorp.server.protocols.https.records.handshake.Handshake;
 import net.mcorp.server.protocols.https.records.handshake.HandshakeStub;
 import net.mcorp.server.protocols.https.records.handshake.types.ClientHello;
 import net.mcorp.server.protocols.https.records.handshake.types.ServerHello;
-import net.mcorp.utils.BinaryUtilitys;
 
 public class HttpsPacket extends AsymmetricalPacket implements BinaryUtilitys{
 
