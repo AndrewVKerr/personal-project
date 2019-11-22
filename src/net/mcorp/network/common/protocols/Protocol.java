@@ -20,6 +20,7 @@ public abstract class Protocol<ReadData_ extends PacketData, WriteData_ extends 
 	public void write(Connection connection, WriteData_ data) throws IOException {
 		try {
 			this.writeCall(connection.getOutputStream(),data);
+			connection.getOutputStream().flush();
 		} catch (Exception e) {
 			throw new IOException(e);
 		}

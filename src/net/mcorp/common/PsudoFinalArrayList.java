@@ -5,12 +5,10 @@ import java.util.Collection;
 
 import net.mcorp.network.common.utils.debug.SmartDebugInterface;
 
-public final class PsudoFinalArrayList<Obj> extends ArrayList<Obj> implements SmartDebugInterface{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 2736261668533375744L;
+public class PsudoFinalArrayList<Obj extends Object> implements SmartDebugInterface{
 
+	public ArrayList<Obj> list = new ArrayList<Obj>();
+	
 	/**
 	 * A flag used to prevent further set calls.
 	 */
@@ -32,27 +30,42 @@ public final class PsudoFinalArrayList<Obj> extends ArrayList<Obj> implements Sm
 	public boolean add(Obj object) {
 		if(this.isFinal == true)
 			throw new RuntimeException("[PsudoFinalVariable.add(Obj):FINAL] The internal isFinal flag has been set to true, no more elements may be added onto the list.");
-		super.add(object);
+		list.add(object);
 		return true;
 	}
 	
 	public void add(int index, Obj object) {
 		if(this.isFinal == true)
 			throw new RuntimeException("[PsudoFinalVariable.add(int,Obj):FINAL] The internal isFinal flag has been set to true, no more elements may be added onto the list.");
-		super.add(index,object);
+		list.add(index,object);
 	}
 	
-	public boolean addAll(Collection<? extends Obj> objects) {
+	public void set(int index, Obj object) {
 		if(this.isFinal == true)
-			throw new RuntimeException("[PsudoFinalVariable.add(Obj):FINAL] The internal isFinal flag has been set to true, no more elements may be added onto the list.");
-		super.addAll(objects);
-		return true;
+			throw new RuntimeException("[PsudoFinalVariable.set(int,Obj):FINAL] The internal isFinal flag has been set to true, no more changes may be done to the list.");
+		list.add(index,object);
+	}
+	
+	public void remove(Obj object) {
+		if(this.isFinal == true)
+			throw new RuntimeException("[PsudoFinalVariable.remove(Obj):FINAL] The internal isFinal flag has been set to true, no more changes may be done to the list.");
+		list.remove(object);
+	}
+	
+	public void remove(int index) {
+		if(this.isFinal == true)
+			throw new RuntimeException("[PsudoFinalVariable.remove(int):FINAL] The internal isFinal flag has been set to true, no more changes may be done to the list.");
+		list.remove(index);
+	}
+	
+	public Object[] toArray() {
+		return list.toArray();
 	}
 	
 	/**
 	 * Sets the internal {@linkplain #isFinal} flag to true. This signals to the add methods that they can no longer add elements onto the list.
 	 */
-	public void done() {
+	public void publish() {
 		this.isFinal = true;
 	}
 

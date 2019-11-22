@@ -1,14 +1,12 @@
 package net.mcorp.network.server;
 
-import net.mcorp.network.common.protocols.http.HttpData;
+import net.mcorp.network.server.handlers.HttpConnectionHandler;
 
 public class TestServer {
 
 	public static final void main(String[] args) {
-		HttpData data = new HttpData();
-		System.out.println(data.toString("","\t"));
-		//Server<HttpConnectionHandler> server = new Server<HttpConnectionHandler>(new HttpConnectionHandler(), true);
-		//while(server.isRunning()) {}
+		Server<HttpConnectionHandler> server = new Server<HttpConnectionHandler>(new HttpConnectionHandler(), true);
+		while(server.isRunning()) {}
 	}
 	
 }

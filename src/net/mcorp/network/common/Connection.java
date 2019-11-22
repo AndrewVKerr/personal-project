@@ -36,11 +36,13 @@ public abstract class Connection {
 		try {
 			return this.socket.getOutputStream();
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new ConnectionException(ConnectionFailState.OUTPUT_CLOSED);
 		}
 	}
 	
 	public void close() throws IOException {
+		System.out.println("==================] CLOSED");
 		this.socket.close();
 	}
 	

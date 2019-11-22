@@ -9,7 +9,7 @@ import net.mcorp.network.common.utils.debug.SmartDebug;
  * @author Andrew Kerr
  * @param <Obj> - The object class that this object should contain.
  */
-public final class PsudoFinalVariable<Obj> extends SmartDebug{
+public class PsudoFinalVariable<Obj> extends SmartDebug{
 	
 	/**
 	 * A flag used to prevent further set calls.
@@ -39,6 +39,7 @@ public final class PsudoFinalVariable<Obj> extends SmartDebug{
 	 * Sets {@linkplain PsudoFinalVariable#object}, this action can only be done once.<br>
 	 * Any further calls will throw a runtime exception.
 	 * @param object - {@linkplain Object ? extends Object} - The value set at {@linkplain PsudoFinalVariable#object}
+	 * @throws RuntimeException This method is a one time call, any further calls will result in a runtime exception.
 	 */
 	public void set(Obj object) {
 		if(this.isFinal() == true)

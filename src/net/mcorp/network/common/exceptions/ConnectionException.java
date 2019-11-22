@@ -47,7 +47,7 @@ public class ConnectionException extends SmartDebugException{
 		return this.getClass().getSimpleName()+"["
 		+ "\n"+indent+indentBy+"caller = String["+this.caller+"],"
 		+ "\n"+indent+indentBy+"message = String["+this.message+"],"
-		+ "\n"+indent+indentBy+"enclosed = "+this.enclosed.toString(indent+indentBy,indentBy)+","
+		+ "\n"+indent+indentBy+"enclosed = "+(this.enclosed != null ? this.enclosed.toString(indent+indentBy,indentBy) : null )+","
 		+ "\n"+indent+indentBy+"state = "+this.state
 		+ indent+"]";
 	}
