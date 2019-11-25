@@ -59,6 +59,15 @@ public abstract class BinaryUtils extends SmartDebug{
 		return (bool ? "1" : "0");
 	}
 	
+	protected String toBinStr(byte[] bytes) {
+		String s = "";
+		int len = 8;
+		for(byte bite : bytes) {
+			s += String.format("%"+len+"s",Integer.toBinaryString(bite)).replace(' ', '0');
+		}
+		return s;
+	}
+	
 	/**
 	 * Turns a {@linkplain Byte} value into a BinaryString.
 	 * @param bite - {@linkplain Byte} - Byte value to convert into BinaryString.

@@ -10,7 +10,8 @@ public class ConnectionException extends SmartDebugException{
 		SOCKET_CLOSED,
 		CLIENT_RESET,
 		SERVER_RESET,
-		PROTOCOL_ERROR
+		PROTOCOL_ERROR,
+		RESTRICTED_IO
 	}
 	
 	private static final long serialVersionUID = -4620329650419201945L;

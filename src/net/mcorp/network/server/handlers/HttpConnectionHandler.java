@@ -6,6 +6,7 @@ import java.net.Socket;
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.protocols.http.HttpRequest;
 import net.mcorp.network.common.protocols.http.HttpResponse;
+import net.mcorp.network.common.protocols.encryption.ssl.SSLConnection;
 import net.mcorp.network.common.protocols.http.HttpException;
 import net.mcorp.network.common.protocols.http.HttpProtocol;
 import net.mcorp.network.server.ClientConnection;
@@ -16,8 +17,9 @@ public class HttpConnectionHandler extends ConnectionHandler{
 	@Override
 	public void handleAccept(Socket socket) {
 		ClientConnection client = new ClientConnection(socket);
+		SSLConnection ssl = new SSLConnection(client);
 		try {
-			HttpRequest data = HttpProtocol.instance.read(client);
+			HttpRequest data = HttpProtocol.instance.read(ssl);
 			if(data.url.get().equals("/")) {
 				HttpResponse response = new HttpResponse();
 				response.status_code.set(200);
@@ -25,7 +27,7 @@ public class HttpConnectionHandler extends ConnectionHandler{
 				response.httpVersion.set("http/1.1");
 				response.headers.publish();
 				response.data.set("Hello World!");
-				HttpProtocol.instance.write(client, response);
+				HttpProtocol.instance.write(ssl, response);
 			}else {
 				HttpResponse response = new HttpResponse();
 				response.status_code.set(404);
@@ -33,13 +35,13 @@ public class HttpConnectionHandler extends ConnectionHandler{
 				response.httpVersion.set("http/1.1");
 				response.headers.publish();
 				response.data.set("Not Found!");
-				HttpProtocol.instance.write(client, response);
+				HttpProtocol.instance.write(ssl, response);
 			}
 		} catch (Exception e) {
 			if(e instanceof HttpException) {
 				HttpException he = (HttpException) e;
 				try {
-					HttpProtocol.instance.write(client, he.convertToHttpData());
+					HttpProtocol.instance.write(ssl, he.convertToHttpData());
 				} catch (IOException e1) {}
 			}
 			e.printStackTrace();
