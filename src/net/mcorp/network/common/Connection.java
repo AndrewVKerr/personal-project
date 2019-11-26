@@ -9,6 +9,7 @@ import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.exceptions.ConnectionException.ConnectionFailState;
 import net.mcorp.network.common.protocols.encryption.EncryptedConnection;
 import net.mcorp.network.common.protocols.encryption.EncryptedPacketData;
+import net.mcorp.network.common.utils.debug.SmartDebug;
 
 /**
  * A abstract class that is used to communicate between two computers, intended to be extended by a object that would designate the connection role
@@ -20,7 +21,7 @@ import net.mcorp.network.common.protocols.encryption.EncryptedPacketData;
  * responsibly for storing information about the connection and will not be responsible for handling the connection.
  * @author Andrew Kerr
  */
-public abstract class Connection {
+public abstract class Connection extends SmartDebug{
 	
 	private Socket socket;
 	public Connection(Socket socket) {

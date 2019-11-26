@@ -1,5 +1,7 @@
 package net.mcorp.network.common.protocols;
 
+import net.mcorp.network.common.utils.debug.SmartDebug;
+
 /**
  * <h1>PacketData</h1>
  * <hr>
@@ -8,4 +10,4 @@ package net.mcorp.network.common.protocols;
  * </p>
  * @author Andrew Kerr
  */
-public abstract class PacketData {}
+public abstract class PacketData extends SmartDebug {}

@@ -9,5 +9,11 @@ public final class ClientConnection extends Connection{
 	public ClientConnection(Socket socket) {
 		super(socket);
 	}
+
+	@Override
+	public String toString(String indent, String indentBy) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

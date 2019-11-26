@@ -1,5 +1,6 @@
 package net.mcorp.network.common.protocols.encryption;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import net.mcorp.network.common.Connection;
@@ -17,5 +18,9 @@ public abstract class EncryptedConnection<Out_ extends EncryptWriteStream, In_ e
 	public abstract InputStream getInputStream() throws ConnectionException;
 	
 	public abstract OutputStream getOutputStream() throws ConnectionException;
-
+	
+	public abstract boolean isOpen();
+	
+	public abstract void close() throws IOException;
+	
 }

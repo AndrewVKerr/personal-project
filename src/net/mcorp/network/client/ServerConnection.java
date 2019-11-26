@@ -10,4 +10,10 @@ public class ServerConnection extends Connection{
 		super(socket);
 	}
 
+	@Override
+	public String toString(String indent, String indentBy) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

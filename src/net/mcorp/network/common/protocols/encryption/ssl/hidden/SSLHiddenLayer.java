@@ -9,6 +9,7 @@ import net.mcorp.network.common.protocols.encryption.EncryptedConnection;
 import net.mcorp.network.common.protocols.encryption.ssl.SSLConnection;
 import net.mcorp.network.common.protocols.encryption.ssl.SSLConnection.SSLPhase;
 import net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.SSLClientHello;
+import net.mcorp.network.common.utils.debug.SmartDebugInterface;
 
 /**
  * <h1>SSLHiddenLayer</h1>
@@ -20,21 +21,17 @@ import net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.SSLCli
  * @author Andrew Kerr
  */
 public class SSLHiddenLayer extends EncryptHiddenLayer{
-	
-	public final Connection connection;
 	public final SSLConnection ssl;
 	
-	public SSLHiddenLayer(SSLConnection ssl, Connection connection) {
-		if(connection instanceof EncryptedConnection)
+	public SSLHiddenLayer(SSLConnection ssl) {
+		if(ssl.connection instanceof EncryptedConnection)
 			throw new RuntimeException("[SSLHiddenLayer(SSLConnection,Connection):OVERRIDE_REQUIRED] Double encryption? Use Constructor SSLHiddenLayer(SSLConnection,Connection,Boolean) to override!");
-		this.connection = connection;
 		this.ssl = ssl;
 	}
 	
-	public SSLHiddenLayer(SSLConnection ssl, Connection connection, boolean overrideDouble) {
-		if(connection instanceof EncryptedConnection && overrideDouble == false)
+	public SSLHiddenLayer(SSLConnection ssl, boolean overrideDouble) {
+		if(ssl.connection instanceof EncryptedConnection && overrideDouble == false)
 			throw new RuntimeException("[SSLHiddenLayer(SSLConnection,Connection,Boolean):OVERRIDE_REQUIRED] Double encryption? overrideDouble parameter set to false! (Set true to override.)");
-		this.connection = connection;
 		this.ssl = ssl;
 	}
 
@@ -43,7 +40,7 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 		while(ssl.phase() != SSLPhase.Secured) { //Check if connection is secured. If not attempt to secure the connection.
 			
 			//Check if connection is still open, if not bail.
-			if(this.connection.isOpen() == false)
+			if(ssl.connection.isOpen() == false)
 				throw (IOException) ssl.error(new IOException("[SSLHiddenLayer.establishAndMaintainConnection():SOCKET_CLOSED] Client closed the socket during the (re)securing of this connection."));
 			
 			//Check if an error has occurred, is so bail on local operations.
@@ -55,7 +52,7 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 			
 			//Attempt to establish a connection. If failed then set internal flags and bail.
 			try {
-				System.out.println("Attempting to decode!");
+				System.out.println("Attempting to establish connection!");
 				SSLHiddenPacketData packet = new SSLHiddenPacketData(this);
 				if(packet.handshake == null)
 					throw new IOException("[SSLHiddenLayer.establishAndMaintainConnection():FAILED_STATE] Broken Pipe!");
@@ -63,13 +60,13 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 				if(packet.handshake.data_type.get() == 1) {
 					System.out.println("Client Hello!");
 					SSLClientHello client_hello = (SSLClientHello) packet.handshake;
-					System.out.println(client_hello.ssl_tls_version.get());
-					System.out.println(client_hello.length_of_packet.get());
-					System.out.println("DONE! (LOOP)");
-					while(true) {}
 				}else {
 					System.out.println("WRONG!");
 				}
+				System.out.println(packet.toString());
+				
+				System.out.println("DONE! (LOOP)");
+				while(true) {}
 				
 			} catch (Exception e) {
 				IOException ioe = (IOException)ssl.error(new IOException("[SSLHiddenLayer.establishAndMaintainConnection():HIDDEN_PACKET_DATA_ERROR] Unable to establish a proper connection. SEE SUPPRESSED!"));
@@ -88,6 +85,13 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 	@Override
 	public int read() throws IOException {
 		return 0;
+	}
+
+	@Override
+	public String toString(String indent, String indentBy) {
+		return this.getClass().getSimpleName()+"["
+				+ "\n"+indent+indentBy+"ssl = "+this.ssl.toString()+""
+				+ "\n"+indent+"]";
 	}
 	
 	
