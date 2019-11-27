@@ -3,6 +3,7 @@ package net.mcorp.common;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import net.mcorp.network.common.utils.debug.SmartDebug;
 import net.mcorp.network.common.utils.debug.SmartDebugInterface;
 
 public class PsudoFinalArrayList<Obj extends Object> implements SmartDebugInterface{
@@ -62,6 +63,22 @@ public class PsudoFinalArrayList<Obj extends Object> implements SmartDebugInterf
 		return list.toArray();
 	}
 	
+	public Object[] toArray(Class<? extends Obj> class_) {
+		Object[] objs = new Object[this.list.size()];
+		int i = 0;
+		for(Obj obj : this.list) {
+			if(obj.getClass() == class_) {
+				objs[i] = obj;
+				i++;
+			}
+		}
+		Object[] finObjs = new Object[objs.length];
+		for(int j = 0; j <= objs.length; j++) {
+			finObjs[j] = objs[j];
+		}
+		return finObjs;
+	}
+	
 	/**
 	 * Sets the internal {@linkplain #isFinal} flag to true. This signals to the add methods that they can no longer add elements onto the list.
 	 */
@@ -71,9 +88,14 @@ public class PsudoFinalArrayList<Obj extends Object> implements SmartDebugInterf
 
 	@Override
 	public String toString(String indent, String indentBy) {
-		return this.getClass().getSimpleName()+"["
-				+ "\n"+indent+indentBy+"isFinal = Boolean["+this.isFinal+"],"
-				
-				+ "\n"+indent+"]";
+		String s = this.getClass().getSimpleName()+"[";
+		s += "\n"+indent+indentBy+"isFinal = Boolean["+this.isFinal+"],";
+		s += "\n"+indent+indentBy+"values = {";
+		for(Obj obj : list) {
+			s += "\n"+indent+indentBy+indentBy+SmartDebug.readSmartDebug(indent+indentBy+indentBy, indentBy, obj)+",";
+		}
+		s += "\n"+indent+indentBy+"}";
+		s += "\n"+indent+"]";
+		return s;
 	}
 }

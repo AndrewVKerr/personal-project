@@ -32,9 +32,11 @@ public abstract class SmartDebug implements SmartDebugInterface{
 		writer.close();
 	}
 	
-	protected String readSmartDebug(String indent, String indentBy, SmartDebug obj) {
+	public static String readSmartDebug(String indent, String indentBy, Object obj) {
 		if(obj != null) {
-			return obj.toString(indent, indentBy);
+			if(obj instanceof SmartDebug)
+				return ((SmartDebug)obj).toString(indent, indentBy);
+			return obj.toString();
 		}
 		return "null";
 	}

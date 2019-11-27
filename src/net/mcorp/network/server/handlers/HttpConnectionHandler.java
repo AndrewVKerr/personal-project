@@ -17,7 +17,8 @@ public class HttpConnectionHandler extends ConnectionHandler{
 	@Override
 	public void handleAccept(Socket socket) {
 		ClientConnection client = new ClientConnection(socket);
-		SSLConnection ssl = new SSLConnection(client);
+		ClientConnection ssl = client;
+		//SSLConnection ssl = new SSLConnection(client);
 		try {
 			HttpRequest data = HttpProtocol.instance.read(ssl);
 			if(data.url.get().equals("/")) {

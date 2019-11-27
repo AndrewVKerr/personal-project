@@ -17,6 +17,7 @@ public class ServerRunnable<ConnectionHandler_ extends ConnectionHandler> implem
 
 	@Override
 	public void run() {
+		System.out.println("RUNNING");
 		try {
 			if(socket == null) {
 					socket = new ServerSocket(server.getPort());
