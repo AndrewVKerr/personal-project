@@ -1,4 +1,4 @@
-package net.mcorp.network.common.utils;
+package net.mcorp.networked.utils;
 
 import net.mcorp.common.utils.debug.SmartDebug;
 

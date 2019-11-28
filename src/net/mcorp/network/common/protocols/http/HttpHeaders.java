@@ -1,15 +1,15 @@
 package net.mcorp.network.common.protocols.http;
 
-import net.mcorp.common.PsudoFinalArrayList;
-import net.mcorp.common.PsudoFinalVariable;
-import net.mcorp.network.common.utils.debug.SmartDebug;
-import net.mcorp.network.common.utils.debug.SmartDebugInterface;
+import net.mcorp.common.pseudo.PseudoFinalArrayList;
+import net.mcorp.common.pseudo.PseudoFinalVariable;
+import net.mcorp.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebugInterface;
 
 public class HttpHeaders implements SmartDebugInterface{
 	
 	public HttpHeaders() {};
 	
-	private PsudoFinalArrayList<HttpHeader> headers = new PsudoFinalArrayList<HttpHeader>();
+	private PseudoFinalArrayList<HttpHeader> headers = new PseudoFinalArrayList<HttpHeader>();
 	public HttpHeader getHeader(String name) {
 		for(HttpHeader header : (HttpHeader[])headers.toArray()) {
 			if(header.name.get() == name)
@@ -44,8 +44,8 @@ public class HttpHeaders implements SmartDebugInterface{
 	
 	public static class HttpHeader extends SmartDebug{
 		
-		public final PsudoFinalVariable<String> name = new PsudoFinalVariable<String>();
-		public final PsudoFinalVariable<String> value = new PsudoFinalVariable<String>();
+		public final PseudoFinalVariable<String> name = new PseudoFinalVariable<String>();
+		public final PseudoFinalVariable<String> value = new PseudoFinalVariable<String>();
 		
 		@Override
 		public String toString(String indent, String indentBy) {
@@ -64,7 +64,7 @@ public class HttpHeaders implements SmartDebugInterface{
 				+ "\n"+indent+"]";
 	}
 
-	public PsudoFinalArrayList<HttpHeader> getHeaders() {
+	public PseudoFinalArrayList<HttpHeader> getHeaders() {
 		if(this.isFinal())
 			return this.headers;
 		return null;

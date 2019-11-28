@@ -5,14 +5,12 @@ import java.io.InputStream;
 
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.protocols.encryption.EncryptedPacketData;
-import net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.SSLClientHello;
-import net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.SSLHandshakeData;
 
 public class SSLHiddenPacketData extends EncryptedPacketData {
 	
 	public final SSLHiddenLayer hiddenLayer;
 	public final SSLRecord record;
-	public final SSLHandshakeData handshake;
+	//public final SSLHandshakeData handshake;
 	
 	public SSLHiddenPacketData(SSLHiddenLayer hiddenLayer) throws ConnectionException, IOException {
 		this.hiddenLayer = hiddenLayer;
@@ -20,9 +18,9 @@ public class SSLHiddenPacketData extends EncryptedPacketData {
 		this.record = new SSLRecord(in);
 		long type = in.read();
 		if(type == 1) {
-			this.handshake = new SSLClientHello(in);
+			//this.handshake = new SSLClientHello(in);
 		}else {
-			this.handshake = null;
+			//this.handshake = null;
 		}
 	}
 
@@ -31,7 +29,7 @@ public class SSLHiddenPacketData extends EncryptedPacketData {
 		return this.getClass().getSimpleName()+"["
 				+ "\n"+indent+indentBy+this.hiddenLayer.toString(indent+indentBy,indentBy)+","
 				+ "\n"+indent+indentBy+this.record.toString(indent+indentBy, indentBy)+","
-				+ "\n"+indent+indentBy+this.handshake.toString(indent+indentBy, indentBy)+""
+				//+ "\n"+indent+indentBy+this.handshake.toString(indent+indentBy, indentBy)+""
 				+ "\n"+indent+"]";
 	}
 	

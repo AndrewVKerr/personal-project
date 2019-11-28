@@ -2,14 +2,13 @@ package net.mcorp.network.common.protocols.encryption.ssl.hidden;
 
 import java.io.IOException;
 
+import net.mcorp.common.utils.debug.SmartDebugInterface;
 import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.protocols.encryption.EncryptHiddenLayer;
 import net.mcorp.network.common.protocols.encryption.EncryptedConnection;
 import net.mcorp.network.common.protocols.encryption.ssl.SSLConnection;
 import net.mcorp.network.common.protocols.encryption.ssl.SSLConnection.SSLPhase;
-import net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.SSLClientHello;
-import net.mcorp.network.common.utils.debug.SmartDebugInterface;
 
 /**
  * <h1>SSLHiddenLayer</h1>
@@ -20,19 +19,28 @@ import net.mcorp.network.common.utils.debug.SmartDebugInterface;
  * 
  * @author Andrew Kerr
  */
-public class SSLHiddenLayer extends EncryptHiddenLayer{
+public class SSLHiddenLayer extends EncryptHiddenLayer implements Runnable{
 	public final SSLConnection ssl;
+	private final Thread maintainThread;
 	
 	public SSLHiddenLayer(SSLConnection ssl) {
 		if(ssl.connection instanceof EncryptedConnection)
 			throw new RuntimeException("[SSLHiddenLayer(SSLConnection,Connection):OVERRIDE_REQUIRED] Double encryption? Use Constructor SSLHiddenLayer(SSLConnection,Connection,Boolean) to override!");
 		this.ssl = ssl;
+		this.maintainThread = new Thread(this);
+		this.maintainThread.setName("SSLHiddenLayerThread_"+this.hashCode());
+		this.maintainThread.setDaemon(true);
+		this.maintainThread.start();
 	}
 	
 	public SSLHiddenLayer(SSLConnection ssl, boolean overrideDouble) {
 		if(ssl.connection instanceof EncryptedConnection && overrideDouble == false)
 			throw new RuntimeException("[SSLHiddenLayer(SSLConnection,Connection,Boolean):OVERRIDE_REQUIRED] Double encryption? overrideDouble parameter set to false! (Set true to override.)");
 		this.ssl = ssl;
+		this.maintainThread = new Thread(this);
+		this.maintainThread.setName("SSLHiddenLayerThread_"+this.hashCode());
+		this.maintainThread.setDaemon(true);
+		this.maintainThread.start();
 	}
 
 	public synchronized void establishAndMaintainConnection() throws IOException{
@@ -54,7 +62,7 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 			try {
 				System.out.println("Attempting to establish connection!");
 				SSLHiddenPacketData packet = new SSLHiddenPacketData(this);
-				if(packet.handshake == null)
+				/*if(packet.handshake == null)
 					throw new IOException("[SSLHiddenLayer.establishAndMaintainConnection():FAILED_STATE] Broken Pipe!");
 				
 				if(packet.handshake.data_type.get() == 1) {
@@ -62,7 +70,7 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 					SSLClientHello client_hello = (SSLClientHello) packet.handshake;
 				}else {
 					System.out.println("WRONG!");
-				}
+				}*/
 				System.out.println(packet.toString());
 				
 				System.out.println("DONE! (LOOP)");
@@ -79,11 +87,25 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 	
 	@Override
 	public void write(int b) throws IOException {
+		if(ssl.exception() != null) {
+			if(ssl.exception() instanceof IOException)
+				throw (IOException) ssl.exception();
+			IOException ioe = new IOException("[SSLHiddenLayer.write(int):WRITE_FAILED] The SSL Connection has encountered an error that has prevented writing to the socket.");
+			ioe.addSuppressed(ssl.exception());
+			throw ioe;
+		}
 		
 	}
 
 	@Override
 	public int read() throws IOException {
+		if(ssl.exception() != null) {
+			if(ssl.exception() instanceof IOException)
+				throw (IOException) ssl.exception();
+			IOException ioe = new IOException("[SSLHiddenLayer.read():READ_FAILED] The SSL Connection has encountered an error that has prevented reading from the socket.");
+			ioe.addSuppressed(ssl.exception());
+			throw ioe;
+		}
 		return 0;
 	}
 
@@ -92,6 +114,15 @@ public class SSLHiddenLayer extends EncryptHiddenLayer{
 		return this.getClass().getSimpleName()+"["
 				+ "\n"+indent+indentBy+"ssl = "+this.ssl.toString()+""
 				+ "\n"+indent+"]";
+	}
+
+	@Override
+	public void run() {
+		try {
+			this.establishAndMaintainConnection();
+		} catch (IOException e) {
+			ssl.error(e);
+		}
 	}
 	
 	

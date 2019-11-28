@@ -1,6 +1,6 @@
 package net.mcorp.network.common.protocols;
 
-import net.mcorp.network.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebug;
 
 /**
  * <h1>PacketData</h1>

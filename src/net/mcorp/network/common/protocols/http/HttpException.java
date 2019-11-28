@@ -1,6 +1,6 @@
 package net.mcorp.network.common.protocols.http;
 
-import net.mcorp.common.PsudoFinalVariable;
+import net.mcorp.common.pseudo.PseudoFinalVariable;
 
 public class HttpException extends Exception {
 
@@ -9,8 +9,8 @@ public class HttpException extends Exception {
 	 */
 	private static final long serialVersionUID = -9083884061225749939L;
 
-	public final PsudoFinalVariable<Integer> status_code = new PsudoFinalVariable<Integer>();
-	public final PsudoFinalVariable<String> status_text = new PsudoFinalVariable<String>();
+	public final PseudoFinalVariable<Integer> status_code = new PseudoFinalVariable<Integer>();
+	public final PseudoFinalVariable<String> status_text = new PseudoFinalVariable<String>();
 	
 	public HttpException(int status_code, String status_text) {
 		this.status_code.set(status_code);

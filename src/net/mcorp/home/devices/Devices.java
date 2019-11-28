@@ -1,14 +1,14 @@
 package net.mcorp.home.devices;
 
-import net.mcorp.common.PsudoFinalArrayList;
-import net.mcorp.network.common.utils.debug.SmartDebug;
+import net.mcorp.common.pseudo.PseudoFinalArrayList;
+import net.mcorp.common.utils.debug.SmartDebug;
 
 public class Devices extends SmartDebug{
 	
-	private final PsudoFinalArrayList<Device> devices;
+	private final PseudoFinalArrayList<Device> devices;
 	
 	public Devices(){
-		devices = new PsudoFinalArrayList<Device>();
+		devices = new PseudoFinalArrayList<Device>();
 	}
 	
 	public Object[] getDevices(Class<? extends Device> class_) {

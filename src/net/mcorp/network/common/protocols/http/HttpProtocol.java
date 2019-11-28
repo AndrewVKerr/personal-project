@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.concurrent.TimeoutException;
 
-import net.mcorp.common.SynchronizedVariable;
+import net.mcorp.common.sync.SynchronizedVariable;
 import net.mcorp.network.common.protocols.Protocol;
 import net.mcorp.network.common.protocols.http.HttpHeaders.HttpHeader;
 import net.mcorp.network.common.protocols.http.HttpRequest.Method;

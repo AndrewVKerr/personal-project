@@ -5,9 +5,10 @@ import java.io.File;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 
+import net.mcorp.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebugInterface;
 import net.mcorp.home.devices.Devices;
 import net.mcorp.home.devices.wired.DoorSensor;
-import net.mcorp.network.common.utils.debug.SmartDebug;
 import net.mcorp.network.server.Server;
 import net.mcorp.network.server.handlers.HttpConnectionHandler;
 
@@ -57,7 +58,7 @@ public class HomeController extends SmartDebug implements Runnable{
 	@Override
 	public String toString(String indent, String indentBy) {
 		String s = this.getClass().getSimpleName()+"[";
-		s += "\n"+indent+indentBy+"devices = "+SmartDebug.readSmartDebug(indent+indentBy, indentBy, this.devices);
+		s += "\n"+indent+indentBy+"devices = "+SmartDebugInterface.readSmartDebug(indent+indentBy, indentBy, this.devices);
 		s += "\n"+indent+"]";
 		return s;
 	}

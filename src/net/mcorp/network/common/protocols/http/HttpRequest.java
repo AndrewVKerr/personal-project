@@ -3,9 +3,11 @@ package net.mcorp.network.common.protocols.http;
 import java.util.concurrent.TimeoutException;
 
 import net.mcorp.common.*;
+import net.mcorp.common.pseudo.PseudoFinalException;
+import net.mcorp.common.pseudo.PseudoFinalVariable;
+import net.mcorp.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebugInterface;
 import net.mcorp.network.common.protocols.PacketData;
-import net.mcorp.network.common.utils.debug.SmartDebug;
-import net.mcorp.network.common.utils.debug.SmartDebugInterface;
 
 public class HttpRequest extends PacketData implements SmartDebugInterface{
 
@@ -14,15 +16,15 @@ public class HttpRequest extends PacketData implements SmartDebugInterface{
 		POST
 	}
 	
-	public final PsudoFinalException<TimeoutException> timeoutException = new PsudoFinalException<TimeoutException>(); 
+	public final PseudoFinalException<TimeoutException> timeoutException = new PseudoFinalException<TimeoutException>(); 
 	
-	public final PsudoFinalVariable<Method> method = new PsudoFinalVariable<Method>();
-	public final PsudoFinalVariable<String> url = new PsudoFinalVariable<String>();
-	public final PsudoFinalVariable<String> version = new PsudoFinalVariable<String>();
+	public final PseudoFinalVariable<Method> method = new PseudoFinalVariable<Method>();
+	public final PseudoFinalVariable<String> url = new PseudoFinalVariable<String>();
+	public final PseudoFinalVariable<String> version = new PseudoFinalVariable<String>();
 	
 	public final HttpHeaders headers = new HttpHeaders();
 	
-	public final PsudoFinalVariable<String> data = new PsudoFinalVariable<String>();
+	public final PseudoFinalVariable<String> data = new PseudoFinalVariable<String>();
 
 	@Override
 	public String toString(String indent, String indentBy) {

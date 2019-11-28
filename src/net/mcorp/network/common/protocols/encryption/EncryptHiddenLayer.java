@@ -2,7 +2,7 @@ package net.mcorp.network.common.protocols.encryption;
 
 import java.io.IOException;
 
-import net.mcorp.network.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebug;
 
 public abstract class EncryptHiddenLayer extends SmartDebug{
 

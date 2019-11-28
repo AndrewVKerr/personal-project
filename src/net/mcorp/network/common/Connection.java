@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import net.mcorp.common.utils.debug.SmartDebug;
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.exceptions.ConnectionException.ConnectionFailState;
 import net.mcorp.network.common.protocols.encryption.EncryptedConnection;
 import net.mcorp.network.common.protocols.encryption.EncryptedPacketData;
-import net.mcorp.network.common.utils.debug.SmartDebug;
 
 /**
  * A abstract class that is used to communicate between two computers, intended to be extended by a object that would designate the connection role

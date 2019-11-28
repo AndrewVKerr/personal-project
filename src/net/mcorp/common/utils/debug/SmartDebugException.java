@@ -1,4 +1,4 @@
-package net.mcorp.network.common.utils.debug;
+package net.mcorp.common.utils.debug;
 
 public abstract class SmartDebugException extends Exception implements SmartDebugInterface{
 

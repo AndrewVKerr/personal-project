@@ -3,6 +3,9 @@ package net.mcorp.network.common.protocols.encryption.ssl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import net.mcorp.common.utils.debug.SmartDebug;
+import net.mcorp.common.utils.debug.SmartDebugInterface;
 import net.mcorp.network.common.Connection;
 import net.mcorp.network.common.exceptions.ConnectionException;
 import net.mcorp.network.common.protocols.encryption.EncryptedConnection;
@@ -105,9 +108,9 @@ public class SSLConnection extends EncryptedConnection<SSLOutputStream, SSLInput
 	@Override
 	public String toString(String indent, String indentBy) {
 		return this.getClass().getSimpleName()+"["
-				+ "\n"+indent+indentBy+"connection = "+this.readSmartDebug(indent+indentBy, indentBy, this.connection)+","
+				+ "\n"+indent+indentBy+"connection = "+SmartDebugInterface.readSmartDebug(indent+indentBy, indentBy, this.connection)+","
 				+ "\n"+indent+indentBy+"phase = SSLPhase["+this.phase.name()+"],"
-				+ "\n"+indent+indentBy+"hidden = "+this.readSmartDebug(indent+indentBy, indentBy,this.hidden)+","
+				+ "\n"+indent+indentBy+"hidden = "+SmartDebugInterface.readSmartDebug(indent+indentBy, indentBy,this.hidden)+","
 				+ "\n"+indent+indentBy+"input = "+this.input.toString()+","
 				+ "\n"+indent+indentBy+"output = "+this.output.toString()+","
 				+ "\n"+indent+indentBy+"exception = "+this.exception.getLocalizedMessage()+""

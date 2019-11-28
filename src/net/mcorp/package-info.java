@@ -1,5 +1,6 @@
 /**
- * ProjectIO is a library used to quickly and easily set up web based applications.<hr>
+ * <h1>net.mcorp</h1><hr>
+ * MCorp(Meshed Communications or Protocols) is a library used to quickly and easily set up web based applications using predefined (or custom) protocols.<hr>
  * <style>
  * table{width:100%;border:1px #fff solid;}
  * th,td{border-left:1px #fff solid;border-right:1px #fff solid;text-align:center;}

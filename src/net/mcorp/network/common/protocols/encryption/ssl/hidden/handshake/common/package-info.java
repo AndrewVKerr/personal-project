@@ -1,1 +1,0 @@
-package net.mcorp.network.common.protocols.encryption.ssl.hidden.handshake.common;

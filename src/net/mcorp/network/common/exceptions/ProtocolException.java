@@ -1,6 +1,6 @@
 package net.mcorp.network.common.exceptions;
 
-import net.mcorp.network.common.utils.debug.SmartDebugException;
+import net.mcorp.common.utils.debug.SmartDebugException;
 
 public abstract class ProtocolException extends SmartDebugException {
 
