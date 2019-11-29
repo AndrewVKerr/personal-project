@@ -43,7 +43,7 @@ public interface SmartDebugInterface {
 	 */
 	public static String readSmartDebug(String indent, String indentBy, Object obj) {
 		if(obj != null) {
-			if(obj instanceof SmartDebug)
+			if(obj instanceof SmartDebugInterface)
 				return ((SmartDebug)obj).toString(indent, indentBy);
 			return obj.toString();
 		}
