@@ -10,6 +10,7 @@ import com.pi4j.io.gpio.PinState;
 
 import net.mcorp.home.HomeController;
 import net.mcorp.home.devices.Device;
+import net.mcorp.home.devices.Devices;
 
 public abstract class WiredDevice extends Device{
 
@@ -23,7 +24,8 @@ public abstract class WiredDevice extends Device{
 	private final GpioPinDigitalInput input;
 	private final GpioPinDigitalOutput output;
 	
-	public WiredDevice(Config config, Pin pin, String name) {
+	public WiredDevice(Devices devices, Config config, Pin pin, String name) {
+		super(devices);
 		configuration = config;
 		if(config == Config.Input) {
 			input = HomeController.instance.gpio.provisionDigitalInputPin(pin,name,PinPullResistance.PULL_DOWN);

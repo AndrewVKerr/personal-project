@@ -3,6 +3,7 @@ package net.mcorp.home.devices.networked;
 import java.net.SocketException;
 
 import net.mcorp.home.devices.Device;
+import net.mcorp.home.devices.Devices;
 
 public abstract class NetworkedDevice extends Device implements Runnable{
 	
@@ -13,12 +14,14 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 	public synchronized boolean isRunning() { return this.running; };
 	public synchronized void stop() { this.running = false; };
 	
-	public NetworkedDevice(String host, int port) {
+	public NetworkedDevice(Devices devices, String host, int port) {
+		super(devices);
 		this.host = host;
 		this.port = port;
 	}
 	
-	public NetworkedDevice(String host) {
+	public NetworkedDevice(Devices devices, String host) {
+		super(devices);
 		this.host = host;
 		this.port = 80;
 	}
@@ -31,6 +34,7 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		while(isRunning()) {
 			try {
 				this.runCall();
+				Thread.sleep(1000);
 			}catch(Exception e) {
 				e.printStackTrace();
 				if(e instanceof SocketException) {

@@ -1,14 +1,22 @@
 package net.mcorp.home.devices;
 
+import java.io.File;
+
 import net.mcorp.common.pseudo.PseudoFinalArrayList;
 import net.mcorp.common.utils.debug.SmartDebug;
 
 public class Devices extends SmartDebug{
 	
+	public final File folder;
+	
 	private final PseudoFinalArrayList<Device> devices;
 	
-	public Devices(){
+	public Devices(File folder){
 		devices = new PseudoFinalArrayList<Device>();
+		this.folder = folder;
+		if(this.folder.exists() == false)
+			if(this.folder.mkdir())
+				throw new RuntimeException("[Devices(File):FOLDER_NON_EXIST_CANT_CREATE] Could not create a devices folder...");
 	}
 	
 	public Object[] getDevices(Class<? extends Device> class_) {
@@ -16,6 +24,8 @@ public class Devices extends SmartDebug{
 	}
 	
 	public void addDevice(Device device) {
+		if(device.devices != this)
+			throw new RuntimeException("[Devices.addDevice(Device):DEVICE_CANNOT_GET_PARENT] The device provided does not belong to this devices list.]");
 		this.devices.add(device);
 	}
 	

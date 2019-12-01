@@ -18,7 +18,7 @@ public class HomeController extends SmartDebug implements Runnable{
 	
 	public final GpioController gpio;
 	
-	public final Devices devices = new Devices();
+	public final Devices devices = new Devices(new File("/devices"));
 	
 	//public final Server<HttpConnectionHandler> server;
 	private final File enableGPIO = new File("./enable_gpio");
@@ -28,7 +28,7 @@ public class HomeController extends SmartDebug implements Runnable{
 			gpio = GpioFactory.getInstance();
 		else
 			gpio = null;
-		devices.addDevice(new DoorSensor(null,"BasementDoor"));
+		devices.addDevice(new DoorSensor(devices,null,"BasementDoor"));
 		//server = new Server<HttpConnectionHandler>(new HttpConnectionHandler(),false);
 	}
 	

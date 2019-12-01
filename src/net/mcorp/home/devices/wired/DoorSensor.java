@@ -2,10 +2,12 @@ package net.mcorp.home.devices.wired;
 
 import com.pi4j.io.gpio.Pin;
 
+import net.mcorp.home.devices.Devices;
+
 public class DoorSensor extends WiredDevice {
 
-	public DoorSensor(Pin pin, String name) {
-		super((pin == null ? Config.VirtualInput : Config.Input), pin, name);
+	public DoorSensor(Devices devices, Pin pin, String name) {
+		super(devices,(pin == null ? Config.VirtualInput : Config.Input), pin, name);
 	}
 
 	@Override
