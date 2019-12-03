@@ -1,6 +1,7 @@
 package net.mcorp.home.devices;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import net.mcorp.common.pseudo.PseudoFinalArrayList;
 import net.mcorp.common.utils.debug.SmartDebug;
@@ -11,7 +12,7 @@ public class Devices extends SmartDebug{
 	
 	private final PseudoFinalArrayList<Device> devices;
 	
-	public Devices(File folder){
+	public Devices(File folder){		
 		devices = new PseudoFinalArrayList<Device>();
 		this.folder = folder;
 		if(this.folder.exists() == false)

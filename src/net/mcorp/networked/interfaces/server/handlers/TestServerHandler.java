@@ -14,6 +14,7 @@ import java.util.List;
 import net.mcorp.home.devices.Devices;
 import net.mcorp.home.devices.networked.Camera;
 import net.mcorp.home.devices.networked.Camera.Image.ImageFrame;
+import net.mcorp.home.devices.networked.NetworkedDevice;
 import net.mcorp.networked.common.connections.SocketConnection;
 import net.mcorp.networked.interfaces.server.ServerHandler;
 
@@ -29,6 +30,7 @@ public class TestServerHandler extends ServerHandler {
 		t.setName("Camera Thread");
 		t.setDaemon(true);
 		t.start();
+		devices.addDevice(camera);
 	}
 	
 	@Override
@@ -56,32 +58,83 @@ public class TestServerHandler extends ServerHandler {
 			}catch(Exception e) {
 				if(e instanceof SocketTimeoutException) {
 					//Let Client know of its failure...
+					try {
+						out.write("Http/1.1 408\n\n".getBytes());
+					}catch(Exception e1) {
+						System.err.println("[TestServerHandler.handleSocket(Socket):COULD_NOT_INFORM_CLIENT] The client could not be informed about the timeout.");
+					}
 				}
 				throw e;
 			}
 			System.out.println(url);
 			if(url != null) {
-				if(url.equals("/cameras/1")) {
-					try {
-						ImageFrame frame = camera.img().lastFrame();
-						if(frame == null) {
-							out.write("Http/1.1 503 Service Unavailable\n\n<h1>Camera 1</h1><hr><p>Camera 1 is currently unavailable to the network.</p>".getBytes());
-						}else {
-							synchronized(frame) {
-								int[] data = frame.data();
-								out.write(("Http/1.1 200 OK\n"
-										+ "Content-Type: "+frame.type()+"\n"
-										+ "Content-Length: "+data.length+"\n"
-										+ "Cache-Control: no-cache\n"
-										+ "Date: "+frame.date()+"\n"
-										+ "\n").getBytes());
-								for(int b : data) {
-									out.write(b);
+				if(url.startsWith("/cameras")) {
+					String[] temp = url.split("/");
+					System.out.println(temp.length);
+					if(temp.length == 2) {
+						try {
+							if(NetworkedDevice.isEnabled()) {
+								String html = "";
+								html += "<html>\n";
+								html += "\t<head>\n";
+								html += "\t\t<title>Cameras</title>\n";
+								html += "\t</head>\n";
+								html += "\t<body>\n";
+								html += "\t\t<table>\n";
+								html += "\t\t\t<tr><th>Camera UUID</th><th>Camera Link</th><th>IP:PORT</th>\n";
+								for(Object device : this.devices.getDevices(Camera.class)) {
+									if(device instanceof Camera) {
+										Camera camera = (Camera) device;
+										html+="\t\t\t<tr><td>"+camera.uuid+"</td><td><a href='/cameras/"+camera.uuid+"'>/cameras/"+camera.uuid+"</a></td>"
+												+ "<td>"+camera.host+":"+camera.port+"</td></tr>\n";
+									}
+								}
+								html += "\t\t</table>\n";
+								html += "\t</body>\n";
+								html += "</html>\n";
+								out.write(("Http/1.1 200 OK\n\n"+html).getBytes());
+							}else {
+								String html = "";
+								html += "<html>\n";
+								html += "\t<head>\n";
+								html += "\t\t<title>Cameras</title>\n";
+								html += "\t</head>\n";
+								html += "\t<body>\n";
+								html += "\t\t<h1>Cameras Unavailable</h1>\n";
+								html += "\t\t<hr>\n";
+								html += "\t\t<p>\n";
+								html += "\t\t\tAll Networked devices are disabled as of this time.\n";
+								html += "\t\t</p>\n";
+								html += "\t</body>\n";
+								html += "</html>\n";
+								out.write(("Http/1.1 503 Network Disabled\n\n"+html).getBytes());
+							}
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}else {
+						String cameraId = temp[2];
+						try {
+							ImageFrame frame = camera.img().lastFrame();
+							if(frame == null) {
+								out.write("Http/1.1 503 Service Unavailable\n\n<h1>Camera 1</h1><hr><p>Camera 1 is currently unavailable to the network.</p>".getBytes());
+							}else {
+								synchronized(frame) {
+									int[] data = frame.data();
+									out.write(("Http/1.1 200 OK\n"
+											+ "Content-Type: "+frame.type()+"\n"
+											+ "Content-Length: "+data.length+"\n"
+											+ "Cache-Control: no-cache\n"
+											+ "Date: "+frame.date()+"\n"
+											+ "\n").getBytes());
+									for(int b : data) {
+										out.write(b);
+									}
 								}
 							}
+						}catch(Exception e) {
+							e.printStackTrace();
 						}
-					}catch(Exception e) {
-						e.printStackTrace();
 					}
 				}else
 				if(url.equals("/")) {
@@ -94,11 +147,21 @@ public class TestServerHandler extends ServerHandler {
 					}catch(Exception e) {
 						e.printStackTrace();
 					}
-				}else {
-					try {
-						out.write("Http/1.1 404 Not Found\n\n".getBytes());
-					}catch(Exception e) {
-						e.printStackTrace();
+				}else{
+					File file = new File("./server_files/"+url);
+					if(file.exists()) {
+						try {
+							out.write("Http/1.1 200 OK\n\n".getBytes());
+							out.write(Files.readAllBytes(file.toPath()));
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
+					}else {
+						try {
+							out.write("Http/1.1 404 Not Found\n\n".getBytes());
+						}catch(Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}

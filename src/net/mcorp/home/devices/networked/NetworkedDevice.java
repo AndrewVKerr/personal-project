@@ -2,6 +2,8 @@ package net.mcorp.home.devices.networked;
 
 import java.net.SocketException;
 
+import javax.swing.JOptionPane;
+
 import net.mcorp.home.devices.Device;
 import net.mcorp.home.devices.Devices;
 
@@ -15,6 +17,17 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 	public synchronized void stop() { this.running = false; };
 	
 	private static boolean enable_devices = false;
+	public static final boolean isEnabled() { return enable_devices; }
+	public static final boolean promptEnable() {
+		if(enable_devices)
+			return true;
+		int res = JOptionPane.showConfirmDialog(null, "Would you like to enable networked devices?", "Enable Network Devices?", JOptionPane.YES_NO_OPTION);
+		if(res == JOptionPane.YES_OPTION) {
+			enable_devices = true;
+			return true;
+		}
+		return false;
+	}
 	
 	public NetworkedDevice(Devices devices, String host, int port) {
 		super(devices);
@@ -36,7 +49,14 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		while(isRunning()) {
 			try {
 				if(enable_devices)
-					this.runCall();
+					synchronized(this) {
+						this.runCall();
+					}
+				else {
+					System.err.println("[NetworkedDevice.run():DEVICE_DISABLED] All networked devices are currently disabled. Halting ["+this.getClass().getSimpleName()+"] object thread...");
+					this.stop();
+					break;
+				}
 				Thread.sleep(1000);
 			}catch(Exception e) {
 				e.printStackTrace();

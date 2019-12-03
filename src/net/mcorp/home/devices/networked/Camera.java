@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Calendar;
+import java.util.UUID;
 
 import net.mcorp.home.devices.Devices;
 import net.mcorp.networked.common.connections.SocketConnection;
@@ -20,6 +21,8 @@ public class Camera extends NetworkedDevice{
 	public final File ipFolder;
 	public final File deviceInfoFolder;
 	public final File imagesFolder;
+	
+	public final UUID uuid = UUID.randomUUID();
 	
 	public static class Image {
 		

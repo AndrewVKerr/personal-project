@@ -20,7 +20,7 @@ import net.mcorp.common.utils.debug.SmartDebugInterface;
  */
 public class PseudoFinalArrayList<Obj extends Object> implements SmartDebugInterface{
 
-	public ArrayList<Obj> list = new ArrayList<Obj>();
+	private final ArrayList<Obj> list = new ArrayList<Obj>();
 	
 	/**
 	 * A flag used to prevent further set calls.
@@ -85,7 +85,7 @@ public class PseudoFinalArrayList<Obj extends Object> implements SmartDebugInter
 			}
 		}
 		Object[] finObjs = new Object[objs.length];
-		for(int j = 0; j <= objs.length; j++) {
+		for(int j = 0; j < objs.length; j++) {
 			finObjs[j] = objs[j];
 		}
 		return finObjs;

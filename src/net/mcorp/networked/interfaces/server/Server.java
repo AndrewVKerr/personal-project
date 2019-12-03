@@ -20,9 +20,22 @@ public class Server<ServerHandler_ extends ServerHandler> implements Runnable{
 	private final ServerHandler_ handler;
 	private final ServerSocket serverSocket;
 	
+	public final ServerController<ServerHandler_> controller = new ServerController<ServerHandler_>(this);
+	
 	private boolean shutdown = false;
-	public void shutdown() { this.shutdown = true; };
-	public boolean willShutdown() { return this.shutdown; };
+	private boolean running = false;
+	public synchronized boolean isRunning() { return this.running; };
+	public synchronized void shutdown() { this.shutdown = true; };
+	public synchronized boolean willShutdown() { return this.shutdown; };
+	public void awaitShutdown() {
+		while(isRunning()) {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 	
 	public Server(ServerHandler_ handler, int port) throws IOException {
 		this.handler = handler;
@@ -32,16 +45,27 @@ public class Server<ServerHandler_ extends ServerHandler> implements Runnable{
 
 	@Override
 	public void run() {
+		synchronized(this) { running = true; }
 		while(!willShutdown()) {
 			try {
-				Socket socket = this.serverSocket.accept();
-				handler.handleSocket(socket);
+				synchronized(this) {
+					Socket socket = this.serverSocket.accept();
+					handler.handleSocket(socket);
+				}
 			}catch(Exception e) {
 				if( !(e instanceof SocketTimeoutException) ) {
 					e.printStackTrace();
 				}
 			}
 		}
+		synchronized(this) { running = false; }
+	}
+	
+	public void close() throws IOException {
+		if(this.isRunning()) {
+			throw new RuntimeException("[Server.run():SERVER_STILL_RUNNING] The server is still running right now...");
+		}
+		this.serverSocket.close();
 	}
 	
 }
