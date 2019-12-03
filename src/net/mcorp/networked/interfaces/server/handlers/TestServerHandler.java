@@ -64,16 +64,20 @@ public class TestServerHandler extends ServerHandler {
 				if(url.equals("/cameras/1")) {
 					try {
 						ImageFrame frame = camera.img().lastFrame();
-						synchronized(frame) {
-							int[] data = frame.data();
-							out.write(("Http/1.1 200 OK\n"
-									+ "Content-Type: "+frame.type()+"\n"
-									+ "Content-Length: "+data.length+"\n"
-									+ "Cache-Control: no-cache\n"
-									+ "Date: "+frame.date()+"\n"
-									+ "\n").getBytes());
-							for(int b : data) {
-								out.write(b);
+						if(frame == null) {
+							out.write("Http/1.1 503 Service Unavailable\n\n<h1>Camera 1</h1><hr><p>Camera 1 is currently unavailable to the network.</p>".getBytes());
+						}else {
+							synchronized(frame) {
+								int[] data = frame.data();
+								out.write(("Http/1.1 200 OK\n"
+										+ "Content-Type: "+frame.type()+"\n"
+										+ "Content-Length: "+data.length+"\n"
+										+ "Cache-Control: no-cache\n"
+										+ "Date: "+frame.date()+"\n"
+										+ "\n").getBytes());
+								for(int b : data) {
+									out.write(b);
+								}
 							}
 						}
 					}catch(Exception e) {

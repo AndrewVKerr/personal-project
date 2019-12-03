@@ -14,6 +14,8 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 	public synchronized boolean isRunning() { return this.running; };
 	public synchronized void stop() { this.running = false; };
 	
+	private static boolean enable_devices = false;
+	
 	public NetworkedDevice(Devices devices, String host, int port) {
 		super(devices);
 		this.host = host;
@@ -33,7 +35,8 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		running = true;
 		while(isRunning()) {
 			try {
-				this.runCall();
+				if(enable_devices)
+					this.runCall();
 				Thread.sleep(1000);
 			}catch(Exception e) {
 				e.printStackTrace();
