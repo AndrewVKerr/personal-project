@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.file.Files;
 import java.util.Calendar;
 import java.util.UUID;
 
@@ -159,10 +160,13 @@ public class Camera extends NetworkedDevice{
 		}
 	}
 	
-	@Override
-	public void runCall() throws Exception {
-		SocketConnection socket = null;
-		if(socket == null) {
+	private String key = "";
+	private long lq = 0;
+	
+	public void setupCall() throws Exception {
+		File authFile = new File(this.deviceInfoFolder.getAbsolutePath()+"/auth.txt");
+		if(authFile.exists()) {
+			SocketConnection socket = null;
 			@SuppressWarnings("resource")
 			Socket sock = new Socket(this.host, this.port);
 			long tout = System.currentTimeMillis();
@@ -171,9 +175,45 @@ public class Camera extends NetworkedDevice{
 					throw new SocketException("[Camera.runCall():COULD_NOT_CONNECT] The camera object could not connect to the pysical camera in time.");
 			}
 			socket = new SocketConnection(sock);
+			OutputStream out = socket.getOutputStream();
+			out.write("GET / Http/1.1\n".getBytes());
+			String auth = Files.readString(authFile.toPath());
+			out.write(("Authorization: "+auth+"\n\n").getBytes());
+			
+			out.flush();
+			InputStream in = socket.getInputStream();
+			tout = System.currentTimeMillis();
+			while(in.available() <= 0) {
+				if(System.currentTimeMillis() - tout > 1000)
+					throw new SocketException("[Camera.runCall():AUTH_TIMEOUT] The camera object could not connect to the pysical camera in time.");
+			}
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String head = br.readLine();
+			String[] segs = head.split(" ",3);
+			if(segs.length < 3)
+				throw new SocketException("[Camera.runCall():MALFORMED_RESPONSE] The camera object could not connect to the pysical camera in time.");
+			key = "key="+head.substring(head.lastIndexOf("id="));
+		}else {
+			throw new SocketException("[Camera.setupCall():NO_AUTH_FILE] There is no auth file so this camera cannot be enabled.");
 		}
+	}
+	
+	@Override
+	public void runCall() throws Exception {
+		SocketConnection socket = null;
+		@SuppressWarnings("resource")
+		Socket sock = new Socket(this.host, this.port);
+		long tout = System.currentTimeMillis();
+		while(sock.isConnected() == false) { //Await connection
+			if(System.currentTimeMillis() - tout > 1000)
+				throw new SocketException("[Camera.runCall():COULD_NOT_CONNECT] The camera object could not connect to the pysical camera in time.");
+		}
+		socket = new SocketConnection(sock);
 		OutputStream out = socket.getOutputStream();
-		out.write("GET /jpgmulreq/1/image.jpg?key=1575070468339&lq=13 Http/1.1\n".getBytes());
+		out.write(("GET /jpgmulreq/1/image.jpg?key="+key+"&lq="+lq+" Http/1.1\n").getBytes());
+		lq++;
+		if(lq >= 9999L)
+			lq = 0;
 		out.write("Cookie: dev=159; BSDdev=0; ICEtype=0; SU=admin; jsLivePresetNo=0; jsLiveAutopanNo=0; jslivePatternNum=0; jsliveTourNum=0; playMode=NaN; player=hkvisionMjpeg\n\n".getBytes());
 		try{
 			img.nextFrame(socket.getInputStream());
