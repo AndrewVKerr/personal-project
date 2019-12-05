@@ -45,7 +45,7 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 			if(file.exists())
 				enable_devices = true;
 			else
-				System.err.println("[NetworkedDevice.checkForEnableFile():FILE_DOESNT_EXIST] "+decodedPath+"/enableNetworkedDevices file does not exist!");
+				System.err.println("[NetworkedDevice.checkForEnableFile():FILE_DOESNT_EXIST] "+finalPath+"/enableNetworkedDevices file does not exist!");
 		} catch (UnsupportedEncodingException e) { System.err.println("[NetworkedDevice.checkForEnableFile():CANT_FIND_DIRECTORY] Could not attempt to enable through file."); e.printStackTrace();}
 	}
 	
