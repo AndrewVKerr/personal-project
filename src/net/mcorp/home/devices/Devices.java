@@ -15,6 +15,7 @@ public class Devices extends SmartDebug{
 	public Devices(File folder){		
 		devices = new PseudoFinalArrayList<Device>();
 		this.folder = folder;
+		System.out.println(this.folder.getAbsolutePath());
 		if(this.folder.exists() == false)
 			if(this.folder.mkdir())
 				throw new RuntimeException("[Devices(File):FOLDER_NON_EXIST_CANT_CREATE] Could not create a devices folder...");

@@ -16,11 +16,12 @@ import net.mcorp.home.devices.networked.Camera;
 import net.mcorp.home.devices.networked.Camera.Image.ImageFrame;
 import net.mcorp.home.devices.networked.NetworkedDevice;
 import net.mcorp.networked.common.connections.SocketConnection;
+import net.mcorp.networked.interfaces.server.Server;
 import net.mcorp.networked.interfaces.server.ServerHandler;
 
 public class TestServerHandler extends ServerHandler {
 
-	public final Devices devices = new Devices(new File("./devices"));
+	public final Devices devices = new Devices(new File(Server.workingDirectoryPath()+"/devices"));
 	public final Camera camera = new Camera(devices,"192.168.1.18",80);
 	
 	public static int timeout = 10000;
@@ -151,7 +152,7 @@ public class TestServerHandler extends ServerHandler {
 				if(url.equals("/exit")){
 					System.exit(0);
 				}else {
-					File file = new File("./server_files/"+url);
+					File file = new File(Server.workingDirectoryPath()+"/server_files/"+url);
 					if(file.exists()) {
 						try {
 							out.write("Http/1.1 200 OK\n\n".getBytes());

@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 
 import net.mcorp.home.devices.Device;
 import net.mcorp.home.devices.Devices;
+import net.mcorp.networked.interfaces.server.Server;
 
 public abstract class NetworkedDevice extends Device implements Runnable{
 	
@@ -32,21 +33,11 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		return false;
 	}
 	public static final void checkForEnableFile() {
-		String path = NetworkedDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		try {
-			String decodedPath = URLDecoder.decode(path, "UTF-8");
-			String[] pathSegs = decodedPath.split("/");
-			String finalPath = "/";
-			for(String seg : pathSegs) {
-				if(!seg.endsWith(".jar") && seg.length() > 0)
-					finalPath += seg+"/";
-			}
-			File file = new File(finalPath+"/enableNetworkedDevices");
-			if(file.exists())
-				enable_devices = true;
-			else
-				System.err.println("[NetworkedDevice.checkForEnableFile():FILE_DOESNT_EXIST] "+finalPath+"/enableNetworkedDevices file does not exist!");
-		} catch (UnsupportedEncodingException e) { System.err.println("[NetworkedDevice.checkForEnableFile():CANT_FIND_DIRECTORY] Could not attempt to enable through file."); e.printStackTrace();}
+		if(Server.workingDirectory() != null && new File(Server.workingDirectory().getAbsolutePath()+"/enableNetworkedDevices").exists()) {
+			enable_devices = true;
+		}else {
+			System.err.println("[NetworkedDevice.checkForEnableFile():FILE_NOT_FOUND] Could not find the file, assuming the devices should be disabled.");
+		}
 	}
 	
 	public NetworkedDevice(Devices devices, String host, int port) {
