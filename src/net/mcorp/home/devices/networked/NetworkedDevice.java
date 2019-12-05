@@ -1,6 +1,9 @@
 package net.mcorp.home.devices.networked;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.SocketException;
+import java.net.URLDecoder;
 
 import javax.swing.JOptionPane;
 
@@ -27,6 +30,17 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 			return true;
 		}
 		return false;
+	}
+	public static final void checkForEnableFile() {
+		String path = NetworkedDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		try {
+			String decodedPath = URLDecoder.decode(path, "UTF-8");
+			File file = new File(decodedPath+"/enableNetworkedDevices");
+			if(file.exists())
+				enable_devices = true;
+			else
+				System.err.println("[NetworkedDevice.checkForEnableFile():FILE_DOESNT_EXIST] "+decodedPath+"/enableNetworkedDevices file does not exist!");
+		} catch (UnsupportedEncodingException e) { System.err.println("[NetworkedDevice.checkForEnableFile():CANT_FIND_DIRECTORY] Could not attempt to enable through file."); e.printStackTrace();}
 	}
 	
 	public NetworkedDevice(Devices devices, String host, int port) {
