@@ -52,10 +52,19 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		this.port = 80;
 	}
 	
+	public abstract void setupCall() throws Exception;
 	public abstract void runCall() throws Exception;
 	
 	@Override
 	public void run() {
+		try {
+			setupCall();
+		}catch(Exception e) {
+			if(e instanceof SocketException) {
+				this.stop();
+				return;
+			}
+		}
 		running = true;
 		while(isRunning()) {
 			try {
