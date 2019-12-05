@@ -147,7 +147,10 @@ public class TestServerHandler extends ServerHandler {
 					}catch(Exception e) {
 						e.printStackTrace();
 					}
-				}else{
+				}else
+				if(url.equals("/exit")){
+					System.exit(0);
+				}else {
 					File file = new File("./server_files/"+url);
 					if(file.exists()) {
 						try {
