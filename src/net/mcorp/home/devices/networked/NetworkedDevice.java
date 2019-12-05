@@ -35,7 +35,13 @@ public abstract class NetworkedDevice extends Device implements Runnable{
 		String path = NetworkedDevice.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 		try {
 			String decodedPath = URLDecoder.decode(path, "UTF-8");
-			File file = new File(decodedPath+"/enableNetworkedDevices");
+			String[] pathSegs = decodedPath.split("/");
+			String finalPath = "/";
+			for(String seg : pathSegs) {
+				if(!seg.endsWith(".jar") && seg.length() > 0)
+					finalPath += seg+"/";
+			}
+			File file = new File(finalPath+"/enableNetworkedDevices");
 			if(file.exists())
 				enable_devices = true;
 			else
