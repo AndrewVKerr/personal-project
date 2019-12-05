@@ -91,6 +91,11 @@ public class Camera extends NetworkedDevice{
 		public synchronized void nextFrame(InputStream in) throws Exception{
 			ImageFrame frame = new ImageFrame(this);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			long tout = System.currentTimeMillis();
+			while(!br.ready()) {
+				if(System.currentTimeMillis()-tout > 1000)
+					throw new SocketException("[Camera.Image.nextFrame():NO_RESPONSE] Socket never responded to our request...");
+			}
 			String line = br.readLine();
 			if(line.contains("200")) {
 				synchronized(frame) {
@@ -178,7 +183,7 @@ public class Camera extends NetworkedDevice{
 			OutputStream out = socket.getOutputStream();
 			out.write("GET / Http/1.1\n".getBytes());
 			String auth = Files.readString(authFile.toPath());
-			out.write(("Authorization: "+auth+"\n\n").getBytes());
+			out.write(("Authorization: Basic "+auth+"\n\n").getBytes());
 			
 			out.flush();
 			InputStream in = socket.getInputStream();
