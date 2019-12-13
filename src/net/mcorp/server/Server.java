@@ -22,6 +22,7 @@ import net.mcorp.server.resources.transferable.Webpage;
 public class Server implements Runnable{
 
 	public final ServerSocket server;
+	public final ServerInterface serverInterface = new ServerInterface();
 	
 	public final ResourceTree fileTree;
 	
