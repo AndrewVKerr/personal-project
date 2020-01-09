@@ -1,9 +1,5 @@
 package net.mcorp;
 
-import java.io.IOException;
-
-import javax.swing.JOptionPane;
-
 import net.mcorp.common.debugger.Debugger;
 import net.mcorp.server.Server;
 
@@ -12,8 +8,8 @@ public class ServerTester {
 	public static void main(String[] args) {
 		try {
 			Debugger.println(Debugger.DebugLevel.INFO, "Debugger starting up...");
-			IOException christian = new IOException("DOMINIC...");
-			Debugger.printThrowable(Debugger.DebugLevel.FATAL, christian);
+			Server server = new Server();
+			server.run();
 			//Server server = new Server();
 			//System.out.println(server.fileTree.toString());
 			//server.fileTree.resources.add(new Webpage("index", new File("C:\\Users\\kerr3\\Desktop\\servers\\test\\index.html")));

@@ -37,6 +37,9 @@ public class Server implements Runnable{
 			filesDir = new File("/home/akerr/GIT/personal-project/server_files/");
 			if(filesDir.exists() == false) {
 				filesDir = new File("C:/Users/kerr3/Desktop/network/personal-project/server_files/");
+				if(filesDir.exists() == false) {
+					filesDir = new File("./server_files/");
+				}
 			}
 		}
 		
