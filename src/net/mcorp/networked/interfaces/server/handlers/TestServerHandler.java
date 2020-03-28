@@ -12,9 +12,9 @@ import java.nio.file.Files;
 import java.util.List;
 
 import net.mcorp.home.devices.Devices;
-import net.mcorp.home.devices.networked.Camera;
-import net.mcorp.home.devices.networked.Camera.Image.ImageFrame;
 import net.mcorp.home.devices.networked.NetworkedDevice;
+import net.mcorp.home.devices.networked.camera.Camera;
+import net.mcorp.home.devices.networked.camera.Camera.Image.ImageFrame;
 import net.mcorp.networked.common.connections.SocketConnection;
 import net.mcorp.networked.interfaces.server.Server;
 import net.mcorp.networked.interfaces.server.ServerHandler;

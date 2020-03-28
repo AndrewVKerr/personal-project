@@ -69,7 +69,8 @@ public final class Debugger {
 	
 	public static final Debugger instance = new Debugger();
 	
-	public final ArrayList<DebugLevel> currentlyShownLevels = new ArrayList<DebugLevel>();
+	public final ArrayList<DebugLevel> currentlyEnabledDebugLevels = new ArrayList<DebugLevel>();
+	public final ArrayList<DebugLevel> currentlyDisabledDebugLevels = new ArrayList<DebugLevel>();
 	
 	public final JFrame debuggerFrame;
 	public final JList<Throwable> jlist_throwables;
@@ -120,7 +121,8 @@ public final class Debugger {
 					DebugLevel level = disabledLevels.getSelectedValue();
 					if(level == null)
 						return;
-					currentlyShownLevels.add(level);
+					currentlyEnabledDebugLevels.add(level);
+					currentlyDisabledDebugLevels.remove(level);
 					
 					//Recalculate the enable/disabled lists.
 					
@@ -159,7 +161,8 @@ public final class Debugger {
 					DebugLevel level = enabledLevels.getSelectedValue();
 					if(level == null)
 						return;
-					currentlyShownLevels.remove(level);
+					currentlyEnabledDebugLevels.remove(level);
+					currentlyDisabledDebugLevels.add(level);
 					
 					//Recalculate the enable/disabled lists.
 					
@@ -266,17 +269,39 @@ public final class Debugger {
 			panel.add(scroll);
 			
 			debuggerFrame.add(panel);
-			debuggerFrame.setVisible(true);
 		}
-		for(DebugLevel level : DebugLevel.values()) {
-			if(level == DebugLevel._LOCATE)
-				continue;
-			currentlyShownLevels.add(level);
-		}
-		this.enabledLevels.setListData(this.currentlyShownLevels.toArray(new DebugLevel[] {}));
-		this.disabledLevels.setListData(new DebugLevel[] { DebugLevel._LOCATE });
 	}
 	
+	public static void startup() {
+		Debugger.instance.startupCALL(DebugLevel.values(),new DebugLevel[] { DebugLevel._LOCATE });
+	}
+	
+	private boolean started = false;
+	public boolean started() { return started; };
+	
+	/**
+	 * Setup and start the debugger, by not calling this method or the global startup method will result
+	 * in no debug information and no debugger window.
+	 * @param active - {@linkplain DebugLevel}[] - An array of DebugLevel's that will be enabled immediately.
+	 * @param deactive - {@linkplain DebugLevel}[] - An array of DebugLevel's that will be disabled immediately.
+	 * @apiNote When setting the active list, adding the _LOCATE value to such a list will result in no data.
+	 */
+	public void startupCALL(DebugLevel[] active, DebugLevel[] deactive) {
+		for(DebugLevel level : active) {
+			if(level == DebugLevel._LOCATE)
+				continue;
+			currentlyEnabledDebugLevels.add(level);
+		}
+		for(DebugLevel level : deactive) {
+			if(currentlyEnabledDebugLevels.contains(level))
+				continue;
+			currentlyDisabledDebugLevels.add(level);
+		}
+		this.enabledLevels.setListData(currentlyEnabledDebugLevels.toArray(new DebugLevel[] {}));
+		this.disabledLevels.setListData(currentlyDisabledDebugLevels.toArray(new DebugLevel[] {}));
+		debuggerFrame.setVisible(true);
+	}
+
 	public Throwable addEntryThrowable(Throwable t) {
 		ArrayList<Throwable> throwables = new ArrayList<Throwable>();
 		throwables.add(t);
@@ -311,18 +336,29 @@ public final class Debugger {
 		instance.println(3, level, message);
 	}
 	
+	/**
+	 * 
+	 * @param level - {@linkplain DebugLevel} - The debug level at which this object should be logged at.
+	 * @param throwable - {@linkplain Throwable} - The throwable object that should be debugged out.
+	 * @return {@linkplain Throwable} - A new throwable object that encapsulates the provided throwable object or the original throwable object (SEE APINOTES)
+	 * @apiNote If the method {@linkplain #startupCALL(DebugLevel[], DebugLevel[])} or {@linkplain Debugger#startup()} has not been called then this method will return the orignal throwable object.
+	 */
 	public static Throwable printThrowable(DebugLevel level, Throwable throwable) {
+		if(instance.started == false)
+			return throwable;
 		Throwable t = instance.println(3, level, "Suppressed: "+throwable.getLocalizedMessage());
 		t.addSuppressed(throwable);
 		return t;
 	}
 	
 	public Throwable println(int stackTraceIndex, DebugLevel level, String message) {
+		if(instance.started == false)
+			return null;
 		if(level == DebugLevel._LOCATE)
 			throw new RuntimeException("[WARN] @ MCorpDebugger.println(DebugLevel,String)\n  - Cannot use _LOCATE as a DebugLevel. _LOCATE's purpose is as a flag for "
 					+ "tracing messages that cannot be found, and as such cannot be used to debug the info.");
 		StackTraceElement ste = Thread.currentThread().getStackTrace()[stackTraceIndex];
-		if(this.currentlyShownLevels.contains(level)) {
+		if(this.currentlyEnabledDebugLevels.contains(level)) {
 			String className = ste.getClassName();
 			try {
 				Class<?> class_ = Class.forName(className);
@@ -356,7 +392,7 @@ public final class Debugger {
 			/**
 			 * Display class name, method name, and line number if _LOCATE is set.
 			 */
-			if(this.currentlyShownLevels.contains(DebugLevel._LOCATE)) {
+			if(this.currentlyEnabledDebugLevels.contains(DebugLevel._LOCATE)) {
 				String trace = "["+level.name()+"_LOCATE] @ File: "+ste.getFileName()+", Class: "+ste.getClassName()+", Method: "+ste.getMethodName()+", Line#: "+ste.getLineNumber()+"\n  - "+message;
 				OutputStream out = level.out;
 				if(out instanceof PrintStream) {

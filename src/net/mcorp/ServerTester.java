@@ -8,6 +8,7 @@ public class ServerTester {
 	
 	public static void main(String[] args) {
 		try {
+			//Debugger.startup();
 			Debugger.println(Debugger.DebugLevel.INFO, "Debugger starting up...");
 			IOException christian = new IOException("DOMINIC...");
 			Debugger.printThrowable(Debugger.DebugLevel.FATAL, christian);

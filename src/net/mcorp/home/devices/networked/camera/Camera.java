@@ -1,4 +1,4 @@
-package net.mcorp.home.devices.networked;
+package net.mcorp.home.devices.networked.camera;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 import net.mcorp.home.devices.Devices;
+import net.mcorp.home.devices.networked.NetworkedDevice;
 import net.mcorp.networked.common.connections.SocketConnection;
 
 public class Camera extends NetworkedDevice{
